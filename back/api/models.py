@@ -3,6 +3,8 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql import func
 from .database import Base
+from pydantic import BaseModel
+
 
 
 class User(Base):
@@ -15,6 +17,7 @@ class User(Base):
     phone_number = Column(String(15), nullable=True)
     role = Column(String(50), nullable=False)
     created_at = Column(TIMESTAMP, default=func.now())
+    prestataire_profile = relationship("PrestataireProfile", back_populates="user", uselist=False)
 
 class Service(Base):
     __tablename__ = "services"
