@@ -10,11 +10,15 @@ import ContactUs from './componenets/cards/ContactUs.js';
 function App() {
   return (
     <div className="App">
+       
+          <Signup/>
+          <br/><br/><br/>
 <Cards/>
 <br/><br/><br/>
 <Offrescard/>
 <Cardsprestatiare/>
 <ContactUs/>
+
 
 
     </div>

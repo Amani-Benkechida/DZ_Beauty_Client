@@ -91,16 +91,16 @@ export const Signup = () => {
       </div>
       <div className="w-1/2 mcnter">
         <form onSubmit={handleSubmit} style={{ width: "85%" }}>
-          <div style={{ color: "#323232" }} className="text-4xl pb-2">
+          <div style={{ color: "#323232" }} className="text-6xl pb-2">
             Create an account
           </div>
-          <h5 style={{ color: "#323232" }} className="mb-3">
+          <h5 style={{ color: "#323232" }} className="mb-3  text-2xl">
             Already have an account?{" "}
-            <a className="inline-block border-b-2 border-black">Log in</a>
+            <a className=" underline">Log in</a>
           </h5>
           <div>
             <div>
-              <p style={{ color: "#6F6F6F" }}>User name</p>
+              <p style={{ color: "#6F6F6F" }} class='text-2xl'>User name</p>
               <input
                 style={{ borderColor: "#C1C1C1" }}
                 className="border-solid border p-7 rounded-xl w-full h-10 mt-2 mb-2"
@@ -109,10 +109,10 @@ export const Signup = () => {
                 value={formData.username}
                 onChange={(e)=>{handleChange(e);black()}}
               />
-              {errors.username && <p className="text-red-500">{errors.username}</p>}
+              {errors.username && <p className="text-red-500  text-2xl">{errors.username}</p>}
             </div>
             <div>
-              <p style={{ color: "#6F6F6F" }}>Email address</p>
+              <p style={{ color: "#6F6F6F" }} class='text-2xl'>Email address</p>
               <input
                 style={{ borderColor: "#C1C1C1" }}
                 className="border-solid border p-7 rounded-xl w-full h-10 mt-2 mb-2"
@@ -121,10 +121,10 @@ export const Signup = () => {
                 value={formData.email}
               onChange={(e)=>{handleChange(e);black()}}
               />
-              {errors.email && <p className="text-red-500">{errors.email}</p>}
+              {errors.email && <p className="text-red-500  text-2xl">{errors.email}</p>}
             </div>
             <div>
-              <p style={{ color: "#6F6F6F" }}>Password</p>
+              <p class='text-2xl' style={{ color: "#6F6F6F" }}>Password</p>
               <input
                 style={{ borderColor: "#C1C1C1" }}
                 className="border-solid border p-7 rounded-xl w-full h-10 mt-2 mb-2"
@@ -134,38 +134,38 @@ export const Signup = () => {
               onChange={(e)=>{handleChange(e);black()}}
               />
               {errors.password && (
-                <p className="text-red-500">{errors.password}</p>
+                <p className="text-red-500  text-2xl">{errors.password}</p>
               )}
-              <div style={{ color: "#6F6F6F", fontSize: "14px" }}>
+              <div class='text-xl' style={{ color: "#6F6F6F" }}>
                 Use 8 or more characters with a mix of letters, numbers & symbols
               </div>
             </div>
             <div>
-              <p className="pt-3" style={{ color: "#6F6F6F" }}>
+              <p className="pt-3 text-2xl " style={{ color: "#6F6F6F" }}>
                 Confirm Password
               </p>
               <input
                 style={{ borderColor: "#C1C1C1" }}
-                className="border-solid border p-7 rounded-xl w-full h-10 mt-2 mb-2"
+                className="border-solid border p-7 rounded-xl w-full h-10 mt-2 mb-2 "
                 type="password"
                 name="confirmPassword"
                 value={formData.confirmPassword}
               onChange={(e)=>{handleChange(e);black()}}
               />
               {errors.confirmPassword && (
-                <p className="text-red-500">{errors.confirmPassword}</p>
+                <p className="text-red-500  text-2xl">{errors.confirmPassword}</p>
               )}
             </div>
           </div>
           <div className="pb-4">
-            <p style={{ color: "#6F6F6F" }}>
+            <p style={{ color: "#6F6F6F" }} class='text-2xl'>
               By creating an account, you agree to our
               <div className="flex">
-                <p className="pr-2" style={{ color: "#323232" }}>
+                <p className="pr-2 text-2xl" style={{ color: "#323232" }}>
                   Terms of use{" "}
                 </p>
                 <p className="pr-2">and</p>{" "}
-                <p style={{ color: "#323232" }}>Privacy Policy</p>
+                <p style={{ color: "#323232" }} class='text-2xl'>Privacy Policy</p>
               </div>
             </p>
           </div>
@@ -178,10 +178,10 @@ export const Signup = () => {
               checked={formData.isNotRobot}
             onChange={(e)=>{handleChange(e);black()}}
             />
-            <p style={{ color: "#6F6F6F" }}>I'm not a robot</p>
+            <p style={{ color: "#6F6F6F" }} class='text-2xl'>I'm not a robot</p>
           </div>
           {errors.isNotRobot && (
-            <p className="text-red-500">{errors.isNotRobot}</p>
+            <p className="text-red-500 text-2xl">{errors.isNotRobot}</p>
           )}
           <div>
             <button
@@ -193,10 +193,13 @@ export const Signup = () => {
                 borderRadius: "10px",
               }}
               
-              className="h-12 text-white text-xl w-3/5"
+              className="h-12 pt-2 text-white text-3xl w-3/5"
             >
               Create an account
             </button>
+            <div class='text-2xl pt-4 flex'>
+            Already have an ccount?<p className="underline">Log in  </p> 
+            </div>
           </div>
         </form>
         <img className="mflower" src={flower} alt="Decorative Flower" />
