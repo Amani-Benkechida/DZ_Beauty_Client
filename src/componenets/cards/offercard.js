@@ -1,5 +1,5 @@
 import React from 'react'
-import img from './Vector.png'
+import img from './shopping-cart.png'
 
 const Offercard = ({image,name,time,price,discount}) => {
     const newprice =price-price*discount/100
@@ -14,9 +14,9 @@ const Offercard = ({image,name,time,price,discount}) => {
 
      </button>
     </div>
-    <div  style={{fontSize:'20px',fontWeight:'100'}} >
+    <div  style={{fontSize:'30px',fontWeight:'100'}} >
         <div>   {name}</div>
-<div class='text-sm' style={{color:'#6F6F6F'}}>    {time}</div>
+<div class='text-xl' style={{color:'#6F6F6F'}}>    {time}</div>
 <div class='flex gap-4'>
     <div style={{color:'#CB8587'}} class='text-lg'>{newprice}DA</div>
     <div class='line-through text-lg' style={{color:'#C1C1C1'}}>    {price}DA</div>

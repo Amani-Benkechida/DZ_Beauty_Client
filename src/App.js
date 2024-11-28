@@ -4,6 +4,7 @@ import Cards from './componenets/cards/Cards.js';
 import { Signup } from './auth/signup.js';
 import Offrescard from './componenets/cards/Ofrrescard.js';
 import Cardsprestatiare from './componenets/cards/Cardsprestatiare.js';
+import ContactUs from './componenets/cards/ContactUs.js';
 
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
 <br/><br/><br/>
 <Offrescard/>
 <Cardsprestatiare/>
+<ContactUs/>
 
 
     </div>

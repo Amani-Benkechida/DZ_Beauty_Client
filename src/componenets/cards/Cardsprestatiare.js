@@ -29,7 +29,7 @@ const Cardsprestatiare = () => {
                 </div>
                 <div class=" flex items-center justify-center h-48">
   <button style={{background:'#323232', color:'white'}} className="flex items-center  relative space-x-2 w-36 h-10">
-     <div class='ml-4'> View More</div>
+     <div class='ml-4 pt-1 text-xl'> View More</div>
     <img src={im} alt="icon" className="w-6 h-5 absolute right-5" />
   </button>
 </div>
