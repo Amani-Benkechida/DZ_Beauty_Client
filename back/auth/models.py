@@ -2,7 +2,7 @@ from sqlalchemy import Column, Integer, String, Text, DECIMAL, Date, Time, Forei
 from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql import func
-from back.auth.database import Base
+from database import Base
 from pydantic import BaseModel
 
 
