@@ -7,12 +7,20 @@ load_dotenv()
 
 API_KEY = os.getenv("BREVO_API_KEY")
 
+# Function to send a password reset email
 def send_reset_email(email: str, reset_token: str):
-    sib_api_v3_sdk.configuration.api_key['api-key'] = API_KEY
-    api_instance = sib_api_v3_sdk.TransactionalEmailsApi()
+    if not API_KEY:
+        raise ValueError("BREVO_API_KEY is not set in the environment variables.")
+    
+    configuration = sib_api_v3_sdk.Configuration()
+    configuration.api_key['api-key'] = API_KEY
+
+    api_instance = sib_api_v3_sdk.TransactionalEmailsApi(
+        sib_api_v3_sdk.ApiClient(configuration)
+    )
 
     subject = "Password Reset Request"
-    sender = {"name": "YourApp", "email": "no-reply@yourapp.com"}
+    sender = {"name": "noreply", "email": "no-reply@yourapp.com"}
     html_content = f"""
     <p>Hi,</p>
     <p>You requested a password reset. Use the token below:</p>
@@ -26,9 +34,13 @@ def send_reset_email(email: str, reset_token: str):
         sender=sender,
         html_content=html_content,
     )
-
     try:
-        api_instance.send_transac_email(send_smtp_email)
-        print("Email sent successfully!")
+        print(f"DEBUG - Sending email to {email} with token {reset_token}")
+        api_response = api_instance.send_transac_email(send_smtp_email)
+        print(f"INFO - Email API Response: {api_response}")
+        return api_response
     except ApiException as e:
-        print("Error sending email:", e)
+        error_message = f"Error sending email to {email}: {e}"
+        print(error_message)
+        raise Exception(error_message)
+

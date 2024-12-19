@@ -9,6 +9,8 @@ from typing import Dict, List, Optional
 from datetime import datetime,date,time
 from routes import router as auth_router
 
+
+
 # Initialize FastAPI Application
 app = FastAPI()
 
@@ -26,3 +28,6 @@ app.add_middleware(
 
 # Include authentication routes
 app.include_router(auth_router)
+#app.include_router(availability_router, prefix="/availability", tags=["Availability"])
+#app.include_router(reservation_router, prefix="/reservation", tags=["Reservation"])
+#app.include_router(payment_router, prefix="/payment", tags=["Payment"])
