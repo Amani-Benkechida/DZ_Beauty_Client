@@ -69,12 +69,13 @@ async def init_db():
         # Create `reservations` table
         await conn.execute(text("""
         CREATE TABLE IF NOT EXISTS reservations (
-            id SERIAL PRIMARY KEY,
+            id SERIAL PRIMARY KEY
             client_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
             prestataire_id INTEGER REFERENCES prestataire_profiles(id) ON DELETE CASCADE,
             service_id INTEGER REFERENCES services(id) ON DELETE CASCADE,
             date DATE NOT NULL,
-            time TIME NOT NULL,
+            time TIME NOT NULL,  
+            end_time TIME NOT NULL, 
             status VARCHAR(50) DEFAULT 'pending' NOT NULL,
             total_price DECIMAL(10, 2) NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

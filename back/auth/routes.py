@@ -7,9 +7,12 @@ from email_service import send_reset_email
 from datetime import datetime, timedelta
 import bcrypt
 import secrets
+from datetime import datetime as dt_datetime, date as dt_date
 
 from datetime import datetime, timedelta,time
 from sqlalchemy import text
+from sqlalchemy.future import select
+from datetime import datetime, time, date as dt_date
 
 from passlib.context import CryptContext
 from typing import List
@@ -167,123 +170,164 @@ async def validate_reset_token(request: ResetTokenValidate, db: AsyncSession = D
     )
     await db.commit()
     return {"message": "Password updated successfully"}
-
 @router.get("/availability/{prestataire_id}/{day_of_week}")
 async def check_availability(
     prestataire_id: int,
     day_of_week: str,
-    time: str = Query(None, regex="^(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d)?$"),
+    time: str = Query(None, regex="^(?:[01]\\d|2[0-3]):[0-5]\\d$"),
     db: AsyncSession = Depends(get_db)
 ):
-    # Capitalize and validate day_of_week
+    # Validate day_of_week
     day_of_week = day_of_week.lower()
     valid_days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
     if day_of_week not in valid_days:
-        logging.error(f"Invalid day_of_week: {day_of_week}")
         raise HTTPException(status_code=400, detail=f"Invalid day_of_week. Expected one of: {', '.join(valid_days)}")
-    
-    logging.info(f"Checking availability for prestataire_id={prestataire_id}, day_of_week={day_of_week}, time={time}")
 
-    # Query database
+    # Query availability using raw SQL
     query = text("""
-        SELECT start_time, end_time FROM prestataire_availabilities
-        WHERE prestataire_id = :prestataire_id AND day_of_week = :day_of_week
+        SELECT start_time, end_time 
+        FROM prestataire_availabilities 
+        WHERE prestataire_id = :prestataire_id 
+        AND day_of_week = :day_of_week
     """)
-    try:
-        result = await db.execute(query, {"prestataire_id": prestataire_id, "day_of_week": day_of_week})
-        availability = result.fetchall()
-        logging.info(f"Database query result: {availability}")
-    except Exception as e:
-        logging.error(f"Database query failed: {str(e)}")
-        raise HTTPException(status_code=500, detail="Internal server error")
+    result = await db.execute(query, {"prestataire_id": prestataire_id, "day_of_week": day_of_week})
+    availabilities = result.mappings().fetchall()  # This returns rows as dictionaries
 
-    if not availability:
-        raise HTTPException(status_code=404, detail="No availability found for this prestataire on the selected day")
+    if not availabilities:
+        return {"available_slots": [], "message": "No availability found for this prestataire on the selected day"}
 
-    # Process available slots
-    available_slots = [
-        {"start_time": slot[0], "end_time": slot[1]}
-        for slot in availability
-    ]
-    logging.debug(f"Processed available slots: {available_slots}")
+    # Process available slots (access by column names)
+    available_slots = [{"start_time": slot["start_time"], "end_time": slot["end_time"]} for slot in availabilities]
 
-    # Check specific time if provided
+    # If a specific time is provided, check it
     if time:
-        requested_time = datetime.strptime(time, "%H:%M:%S").time() if ":" in time else datetime.strptime(time, "%H:%M").time()
+        requested_time = datetime.strptime(time, "%H:%M").time()
         for slot in available_slots:
-            # Directly use `datetime.time` objects without parsing them
-            slot_start = slot["start_time"]
-            slot_end = slot["end_time"]
-            if slot_start <= requested_time <= slot_end:
+            if slot["start_time"] <= requested_time <= slot["end_time"]:
                 return {"available": True, "message": "Available", "slot": slot}
         return {"available": False, "message": "Not available at the requested time"}
 
     return {"available_slots": available_slots}
-
-
-
-@router.post("/pay")
-async def process_payment(reservation_id: int, payment_method: str, db: AsyncSession = Depends(get_db)):
-    if payment_method not in ["credit_card", "paypal", "bank_transfer"]:
-        raise HTTPException(status_code=400, detail="Invalid payment method")
-
-    query = text("""
-    SELECT id FROM reservations WHERE id = :reservation_id AND status = 'pending'
-    """)
-    result = await db.execute(query, {"reservation_id": reservation_id})
-    if not result.fetchone():
-        raise HTTPException(status_code=400, detail="Payment failed or reservation already paid")
-
-    query = text("""
-    UPDATE reservations SET status = 'paid'
-    WHERE id = :reservation_id AND status = 'pending'
-    RETURNING id
-    """)
-    result = await db.execute(query, {"reservation_id": reservation_id})
-    updated_id = result.fetchone()
-
-    if not updated_id:
-        raise HTTPException(status_code=400, detail="Payment failed or reservation already paid")
-
-    await db.commit()
-    return {"status": "Payment successful", "reservation_id": updated_id[0]}
-
 @router.post("/reserve")
-async def create_reservation(client_id: int, prestataire_id: int, date: str, time: str, total_price: float, db: AsyncSession = Depends(get_db)):
-    try:
-        requested_time = datetime.strptime(time, "%H:%M").time()
-    except ValueError:
-        raise HTTPException(status_code=400, detail="Invalid time format. Please use HH:MM.")
+async def create_reservation(
+    client_id: int,
+    prestataire_id: int,
+    service_id: int,
+    date: str,  # YYYY-MM-DD
+    start_time: str,  # HH:MM (Start time of the reservation)
+    end_time: str,    # HH:MM (End time of the reservation)
+    total_price: float,
+    db: AsyncSession = Depends(get_db)
+):
+    # Convert inputs to datetime
+    reservation_date = dt_datetime.strptime(date, "%Y-%m-%d").date()
+    start_time_obj = dt_datetime.strptime(start_time, "%H:%M").time()
+    end_time_obj = dt_datetime.strptime(end_time, "%H:%M").time()
 
-    query = text("""
-    INSERT INTO reservations (client_id, prestataire_id, date, time, total_price, status)
-    VALUES (:client_id, :prestataire_id, :date, :time, :total_price, 'pending')
-    RETURNING id
+    # Ensure the reservation duration is 1 hour
+    if (datetime.combine(reservation_date, end_time_obj) - datetime.combine(reservation_date, start_time_obj)).seconds != 3600:
+        raise HTTPException(status_code=400, detail="The reservation duration must be exactly 1 hour.")
+
+    # Determine the day of the week (e.g., "monday", "tuesday", etc.)
+    day_of_week = reservation_date.strftime("%A").lower()  # "monday", "tuesday", etc.
+
+    # Check for overlapping reservations (Check availability first)
+    check_reservations_query = text("""
+        SELECT time, end_time
+        FROM reservations
+        WHERE prestataire_id = :prestataire_id AND date = :date
     """)
-    result = await db.execute(query, {
+    result = await db.execute(check_reservations_query, {"prestataire_id": prestataire_id, "date": reservation_date})
+    reservations = result.mappings().fetchall()
+
+    for reservation in reservations:
+        reserved_start_time = reservation["time"]
+        reserved_end_time = reservation["end_time"]
+        if reserved_start_time < end_time_obj and reserved_end_time > start_time_obj:
+            raise HTTPException(status_code=400, detail="The time slot is already reserved.")
+
+    # Insert the reservation
+    insert_reservation_query = text("""
+        INSERT INTO reservations (client_id, prestataire_id, service_id, date, time, end_time, total_price, status)
+        VALUES (:client_id, :prestataire_id, :service_id, :date, :start_time, :end_time, :total_price, 'pending')
+        RETURNING id
+    """)
+    result = await db.execute(insert_reservation_query, {
         "client_id": client_id,
         "prestataire_id": prestataire_id,
-        "date": date,
-        "time": time,
+        "service_id": service_id,
+        "date": reservation_date,
+        "start_time": start_time_obj,
+        "end_time": end_time_obj,
         "total_price": total_price
     })
     reservation_id = result.fetchone()[0]
+
+    # Update the availability after reservation (remove only the reserved time)
+    # Here, you'll need to query the availability slots based on `day_of_week`
+    query_availability = text("""
+        SELECT start_time, end_time
+        FROM prestataire_availabilities
+        WHERE prestataire_id = :prestataire_id AND day_of_week = :day_of_week
+    """)
+    result = await db.execute(query_availability, {"prestataire_id": prestataire_id, "day_of_week": day_of_week})
+    available_slots = result.mappings().fetchall()
+
+    for slot in available_slots:
+        slot_start_time = slot["start_time"]
+        slot_end_time = slot["end_time"]
+
+        # If the reserved time is within the available slot, split the availability
+        if slot_start_time < start_time_obj < slot_end_time:
+            # Update the availability to reflect only the portion before the reserved time
+            update_availability_query = text("""
+                UPDATE prestataire_availabilities
+                SET end_time = :start_time
+                WHERE prestataire_id = :prestataire_id
+                AND day_of_week = :day_of_week
+                AND start_time = :start_time
+            """)
+            await db.execute(update_availability_query, {
+                "prestataire_id": prestataire_id,
+                "day_of_week": day_of_week,
+                "start_time": slot_start_time,
+                "start_time": start_time_obj
+            })
+
+            # Insert a new availability slot for the time after the reserved time
+            new_start_time = (datetime.combine(reservation_date, start_time_obj) + timedelta(hours=1)).time()
+            if new_start_time < slot_end_time:
+                insert_availability_query = text("""
+                    INSERT INTO prestataire_availabilities (prestataire_id, day_of_week, start_time, end_time)
+                    VALUES (:prestataire_id, :day_of_week, :start_time, :end_time)
+                """)
+                await db.execute(insert_availability_query, {
+                    "prestataire_id": prestataire_id,
+                    "day_of_week": day_of_week,
+                    "start_time": new_start_time,
+                    "end_time": slot_end_time
+                })
+
     await db.commit()
     return {"reservation_id": reservation_id}
-# Create prestataire
+
 @router.post("/create")
 async def create_prestataire(request: CreatePrestataireRequest, db: AsyncSession = Depends(get_db)):
-    check_query = text("SELECT id FROM users WHERE email = :email")
-    existing_user = await db.execute(check_query, {"email": request.email})
+    # Step 1: Check if the email already exists
+    existing_user_query = text("SELECT id FROM users WHERE email = :email")
+    existing_user = await db.execute(existing_user_query, {"email": request.email})
     if existing_user.fetchone():
         raise HTTPException(status_code=400, detail="Email already exists.")
 
+    # Step 2: Hash the password
+    hashed_password = bcrypt.hashpw(request.password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+
+    # Step 3: Insert new user
     insert_user_query = text("""
         INSERT INTO users (name, email, password_hash, phone_number, role)
         VALUES (:name, :email, :password_hash, :phone_number, 'prestataire')
         RETURNING id
     """)
-    hashed_password = bcrypt.hashpw(request.password.encode(), bcrypt.gensalt()).decode()
     result = await db.execute(insert_user_query, {
         "name": request.name,
         "email": request.email,
@@ -292,6 +336,7 @@ async def create_prestataire(request: CreatePrestataireRequest, db: AsyncSession
     })
     user_id = result.fetchone()[0]
 
+    # Step 4: Insert prestataire profile
     insert_profile_query = text("""
         INSERT INTO prestataire_profiles (user_id, portfolio, specializations, rating, reviews_count)
         VALUES (:user_id, :portfolio, :specializations, 0, 0)
@@ -304,22 +349,138 @@ async def create_prestataire(request: CreatePrestataireRequest, db: AsyncSession
     })
     prestataire_id = result.fetchone()[0]
 
+    # Step 5: Insert availability slots for the entire week
     if request.availabilities:
         for availability in request.availabilities:
-         
+            # Convert the times to datetime objects for comparison
             start_time = datetime.strptime(availability.start_time, "%H:%M").time()
             end_time = datetime.strptime(availability.end_time, "%H:%M").time()
 
+            # Skip inserting availability for days they don't work
+            if availability.day_of_week.lower() == "no availability":
+                continue
+
+            # Check for overlapping slots for the day of the week
+            overlap_query = text("""
+                SELECT * FROM prestataire_availabilities
+                WHERE prestataire_id = :prestataire_id
+                AND day_of_week = :day_of_week
+                AND (
+                    (start_time <= :end_time AND end_time >= :start_time)
+                )
+            """)
+            overlap_result = await db.execute(overlap_query, {
+                "prestataire_id": prestataire_id,
+                "day_of_week": availability.day_of_week,
+                "start_time": start_time,
+                "end_time": end_time
+            })
+            if overlap_result.fetchone():
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Overlapping availability for {availability.day_of_week} {availability.start_time}-{availability.end_time}"
+                )
+
+            # Insert the availability for each specified day of the week
             insert_availability_query = text("""
                 INSERT INTO prestataire_availabilities (prestataire_id, day_of_week, start_time, end_time)
                 VALUES (:prestataire_id, :day_of_week, :start_time, :end_time)
             """)
             await db.execute(insert_availability_query, {
                 "prestataire_id": prestataire_id,
-                "day_of_week": availability.day_of_week,
+                "day_of_week": availability.day_of_week.lower(),  # e.g., "monday", "tuesday"
                 "start_time": start_time,
                 "end_time": end_time
             })
-        await db.commit()
+
+    await db.commit()
 
     return {"message": "Prestataire created successfully", "prestataire_id": prestataire_id}
+#availability based on the calender
+@router.get("/calendar/{prestataire_id}")
+async def get_calendar(prestataire_id: int, month: int, year: int, db: AsyncSession = Depends(get_db)):
+    from calendar import monthrange
+
+    # Fetch availabilities
+    query_availability = text("""
+        SELECT day_of_week, start_time, end_time
+        FROM prestataire_availabilities
+        WHERE prestataire_id = :prestataire_id
+    """)
+    result = await db.execute(query_availability, {"prestataire_id": prestataire_id})
+    availabilities = result.mappings().fetchall()
+
+    if not availabilities:
+        return {"calendar": {}, "message": "No availability found."}
+
+    # Fetch reservations
+    query_reservations = text("""
+        SELECT date, time, duration
+        FROM reservations
+        WHERE prestataire_id = :prestataire_id
+        AND EXTRACT(MONTH FROM date) = :month
+        AND EXTRACT(YEAR FROM date) = :year
+    """)
+    reservations_result = await db.execute(query_reservations, {"prestataire_id": prestataire_id, "month": month, "year": year})
+    reservations = reservations_result.mappings().fetchall()
+
+    # Generate calendar
+    days_in_month = monthrange(year, month)[1]
+    calendar = {}
+
+    for day in range(1, days_in_month + 1):
+        date = dt_date(year, month, day)
+        day_of_week = date.strftime("%A").lower()
+
+        available_slots = [
+            {"start_time": slot["start_time"], "end_time": slot["end_time"]}
+            for slot in availabilities if slot["day_of_week"] == day_of_week
+        ]
+
+        # Filter out unavailable times due to reservations
+        for reservation in reservations:
+            if reservation["date"] == date:
+                reserved_time = reservation["time"]
+                reserved_duration = reservation["duration"]
+                reserved_end_time = (datetime.combine(date, reserved_time) + reserved_duration).time()
+                available_slots = [
+                    slot for slot in available_slots
+                    if not (slot["start_time"] < reserved_end_time and slot["end_time"] > reserved_time)
+                ]
+
+        calendar[day] = {"available_slots": available_slots}
+
+    return {"calendar": calendar}
+
+
+#admin update availability
+
+@router.put("/availability/update/{prestataire_id}")
+async def update_availability(prestataire_id: int, availabilities: List[dict], db: AsyncSession = Depends(get_db)):
+    # Clear existing availability
+    delete_query = text("DELETE FROM prestataire_availabilities WHERE prestataire_id = :prestataire_id")
+    await db.execute(delete_query, {"prestataire_id": prestataire_id})
+
+    # Insert new availability slots
+    for availability in availabilities:
+        try:
+            # Convert start_time and end_time from string to time objects
+            start_time = datetime.strptime(availability["start_time"], "%H:%M").time()
+            end_time = datetime.strptime(availability["end_time"], "%H:%M").time()
+
+            # Insert the availability into the database
+            insert_query = text("""
+                INSERT INTO prestataire_availabilities (prestataire_id, day_of_week, start_time, end_time)
+                VALUES (:prestataire_id, :day_of_week, :start_time, :end_time)
+            """)
+            await db.execute(insert_query, {
+                "prestataire_id": prestataire_id,
+                "day_of_week": availability["day_of_week"],
+                "start_time": start_time,
+                "end_time": end_time
+            })
+        except ValueError:
+            raise HTTPException(status_code=400, detail="Invalid time format. Use HH:MM format for times.")
+
+    await db.commit()
+    return {"message": "Availability updated successfully."}
