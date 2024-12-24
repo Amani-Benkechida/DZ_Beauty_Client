@@ -2,7 +2,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from fastapi import APIRouter, HTTPException
 from sqlalchemy import text
 from setup.database import engine
-from .send_email import send_email  
+from .send_email import send_email
 import logging
 
 logging.basicConfig(level=logging.INFO)
@@ -30,8 +30,7 @@ async def send_special_offers():
         logger.info("Starting to check loyalty points.")
         async with engine.connect() as conn:
             # Get users with points matching thresholds
-            result = await conn.execute(text(
-                """
+            result = await conn.execute(text("""
                 SELECT lp.client_id, u.email, lp.points 
                 FROM loyalty_program lp
                 JOIN users u ON lp.client_id = u.id
@@ -48,13 +47,13 @@ async def send_special_offers():
                 logger.info(f"User  {email} has {points} points, discount: {discount}")
                 if discount:
                     # Send the email using Brevo
-                    await send_email(email, discount)
+                    send_email(email,discount)
 
                     # Update points to avoid resending
-                    await conn.execute(text(
-                        "UPDATE loyalty_program SET points = points - :threshold WHERE client_id = :client_id",
-                        {"threshold": discount, "client_id": client_id},
-                    ))
+                    await conn.execute(
+                        text("UPDATE loyalty_program SET points = points - :threshold WHERE client_id = :client_id"),
+                        {"threshold": discount, "client_id": client_id}
+                    )
                     await conn.commit()
                     logger.info(f"Sent email to {email} with {discount}% discount.")
     except Exception as e:
@@ -66,3 +65,7 @@ async def manual_check_loyalty():
     """Manually trigger sending offers."""
     await send_special_offers()
     return {"status": "Offers sent if applicable!"}
+
+
+
+
