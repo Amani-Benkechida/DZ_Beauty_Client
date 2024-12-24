@@ -1,0 +1,86 @@
+{
+    "stylists": [
+
+      {
+        "id":"0",
+        "name": "Hiba Bella",
+        "profession": "Hair Stylist",
+        "expertiseLevel": "Stylist",
+        "price": "2000 DA",
+        "description": "Experienced hair stylist specializing in modern cuts, color treatments, and styling.",
+        "image": "https://www.bing.com/images/search?view=detailV2&ccid=WPpgU82O&id=399CDE6432B5765C302455174F1CB982E86F4E3B&thid=OIP.WPpgU82OdVujTRhWWOg1GgHaFj&mediaurl=https%3a%2f%2fwww.brunette-coiffure.com%2fmedia%2fCoiffeurs-nouveau-confinement%2foriginal%2fmd-adobestock_75884263.jpg&cdnurl=https%3a%2f%2fth.bing.com%2fth%2fid%2fR.58fa6053cd8e755ba34d185658e8351a%3frik%3dO05v6IK5HE8XVQ%26pid%3dImgRaw%26r%3d0&exph=886&expw=1181&q=image+de+coiffeure&simid=607991422445698354&FORM=IRPRST&ck=AF4FFCB82D55BB3770014A505736A8BA&selectedIndex=1&itb=0",
+        "portfolio": [
+          "https://example.com/images/hiba-work1.png",
+          "https://example.com/images/hiba-work2.png",
+          "https://example.com/images/hiba-work3.png"
+        ]
+      },
+      { "id":"1",
+        "name": "Amira Zayn",
+        "profession": "Makeup Artist",
+        "expertiseLevel": "Senior Artist",
+        "price": "3000 DA",
+        "description": "Expert in bridal makeup, glam looks, and natural beauty enhancement.",
+        "image": "https://example.com/images/amira-zayn.png",
+        "portfolio": [
+          "https://example.com/images/amira-work1.png",
+          "https://example.com/images/amira-work2.png",
+          "https://example.com/images/amira-work3.png"
+        ]
+      },
+      {
+        "id":"2",
+        "name": "Layla Amine",
+        "profession": "Nail Technician",
+        "expertiseLevel": "Professional",
+        "price": "1500 DA",
+        "description": "Specializes in nail art, gel polish, and acrylic nail extensions.",
+        "image": "https://example.com/images/layla-amine.png",
+        "portfolio": [
+          "https://example.com/images/layla-work1.png",
+          "https://example.com/images/layla-work2.png",
+          "https://example.com/images/layla-work3.png"
+        ]
+      },
+      {     "id":"3",
+        "name": "Sara Yassir",
+        "profession": "Esthetician",
+        "expertiseLevel": "Expert",
+        "price": "2500 DA",
+        "description": "Facial treatments, skin care routines, and waxing services tailored to individual needs.",
+        "image": "https://example.com/images/sara-yassir.png",
+        "portfolio": [
+          "https://example.com/images/sara-work1.png",
+          "https://example.com/images/sara-work2.png",
+          "https://example.com/images/sara-work3.png"
+        ]
+      },
+      {     "id":"4",
+        "name": "Noor Belkacem",
+        "profession": "Lash Technician",
+        "expertiseLevel": "Certified Technician",
+        "price": "1800 DA",
+        "description": "Provides eyelash extensions, lifts, and tinting for a glamorous look.",
+        "image": "https://example.com/images/noor-belkacem.png",
+        "portfolio": [
+          "https://example.com/images/noor-work1.png",
+          "https://example.com/images/noor-work2.png",
+          "https://example.com/images/noor-work3.png"
+        ]
+      },
+      {    "id":"5",
+        "name": "Kenza Idris",
+        "profession": "Henna Artist",
+        "expertiseLevel": "Traditional Specialist",
+        "price": "1000 DA",
+        "description": "Creates intricate henna designs for weddings, festivals, and celebrations.",
+        "image": "https://example.com/images/kenza-idris.png",
+        "portfolio": [
+          "https://example.com/images/kenza-work1.png",
+          "https://example.com/images/kenza-work2.png",
+          "https://example.com/images/kenza-work3.png"
+        ]
+      }
+    ]
+  }
+  
