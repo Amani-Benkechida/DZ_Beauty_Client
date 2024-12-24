@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String, Text, DECIMAL, Date, Time, ForeignKey, TIMESTAMP
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
-from database import Base
+from setup.database import Base
 
 
 

@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import text
-from deps import get_db
+from setup.deps import get_db
 
 router = APIRouter(prefix="/make-review", tags=["makeReview"])
 @router.post("/make-review/")
