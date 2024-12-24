@@ -3,7 +3,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.sql import func
 from pydantic import BaseModel
-from database import Base
+from setup.database import Base
 from typing import List
 from sqlalchemy import text
 

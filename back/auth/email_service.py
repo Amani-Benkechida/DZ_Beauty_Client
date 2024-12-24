@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 API_KEY = os.getenv("BREVO_API_KEY")
+MAIL=os.getenv("BREVO_FROM_EMAIL")
 
 # Function to send a password reset email
 def send_reset_email(email: str, reset_token: str):
@@ -20,7 +21,7 @@ def send_reset_email(email: str, reset_token: str):
     )
 
     subject = "Password Reset Request"
-    sender = {"name": "noreply", "email": "no-reply@yourapp.com"}
+    sender = {"name": "noreply", "email":MAIL}
     html_content = f"""
     <p>Hi,</p>
     <p>You requested a password reset. Use the token below:</p>
