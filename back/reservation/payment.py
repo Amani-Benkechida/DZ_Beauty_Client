@@ -7,7 +7,7 @@ from sqlalchemy import text  # Pour exécuter des requêtes SQL
 from setup.deps import get_db  # Pour obtenir la session de base de données
 import os  # Pour accéder aux variables d'environnement
 from dotenv import load_dotenv  # Pour charger les variables d'environnement depuis un fichier .env
-
+from .send_email import send_confirmation_email
 
 load_dotenv()
 
@@ -26,6 +26,7 @@ class PaymentRequest(BaseModel):
     description: str  # Description of the payment
     receipt_email: str  # Customer's email
     special_offer_id: Optional[int] = None  # ID of the special offer
+    reservation_id: int 
 
 @router.post("/create-payment-intent")
 async def create_payment_intent(payment: PaymentRequest, db: AsyncSession = Depends(get_db)):
@@ -63,6 +64,7 @@ async def create_payment_intent(payment: PaymentRequest, db: AsyncSession = Depe
         points_discount = min(user_points, discount)  # Redeem only available points
         final_amount = payment.amount - points_discount  # Adjust final amount
         print(f"Final Amount: {final_amount}")
+
         # Step 4: Create a PaymentIntent with the final amount
         intent = stripe.PaymentIntent.create(
             amount=int(final_amount),  # Amount in cents
@@ -79,7 +81,17 @@ async def create_payment_intent(payment: PaymentRequest, db: AsyncSession = Depe
             ), {"points_discount": points_discount, "client_id": client_id})
             await db.commit()
 
-        # Step 6: Return the response
+        # Step 6: Update reservation status to "confirmed"
+        reservation_id = payment.reservation_id  # Assuming you pass reservation_id in the request
+        await db.execute(text(
+            "UPDATE reservations SET status = 'confirmed' WHERE id = :reservation_id"
+        ), {"reservation_id": reservation_id})
+        await db.commit()
+
+        # Step 7: Send confirmation email
+        send_confirmation_email(payment.receipt_email, reservation_id)  
+
+        # Step 8: Return the response
         return {
             "client_secret": intent["client_secret"],  # Return the client secret to the frontend
             "payment_intent_id": intent["id"],
