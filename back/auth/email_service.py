@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 SMTP_EMAIL_REPLY = os.getenv("BREVO_FROM_EMAIL_REPLY")
 SMTP_EMAIL = os.getenv("BREVO_FROM_EMAIL")  # Your real email address (hidden from user)
-API_KEY = os.getenv("BREVO_SMPT_KEY")  # Ensure this is your Sendinblue API key
+API_KEY = os.getenv("BREVO_SMPT_KEY") 
 
 # Function to send a password reset email
 def send_reset_email(email: str, reset_token: str):

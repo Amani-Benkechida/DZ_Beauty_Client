@@ -13,7 +13,7 @@ async def make_review(
     db: AsyncSession = Depends(get_db)
 ):
     if rating < 1 or rating > 5:
-        raise HTTPException(status_code=400, detail="Rating must be between 1 and 5.")
+        raise HTTPException(_code=400, detail="Rating must be between 1 and 5.")
 
     async with db.begin():
         # Validate client
