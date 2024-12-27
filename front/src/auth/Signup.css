@@ -1,0 +1,29 @@
+.mcnter{
+   /*  display: flex;
+    justify-content: center;
+    align-items: center;
+ 
+    background-color:red; 
+ */
+ padding-top:5%;
+ padding-left:8%;
+ position: relative;
+
+   font-family: 'Poppins', sans-serif;
+
+
+
+ 
+
+}
+.mflower{
+   position:absolute;
+   right: 0px;
+   bottom: 0px;
+   
+}
+img {
+   filter: contrast(1.2) brightness(1.1);
+   
+ }
+
