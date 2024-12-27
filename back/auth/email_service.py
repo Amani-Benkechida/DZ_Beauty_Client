@@ -4,15 +4,16 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-
-API_KEY = os.getenv("BREVO_API_KEY")
-MAIL=os.getenv("BREVO_FROM_EMAIL")
+SMTP_EMAIL_REPLY = os.getenv("BREVO_FROM_EMAIL_REPLY")
+SMTP_EMAIL = os.getenv("BREVO_FROM_EMAIL")  # Your real email address (hidden from user)
+API_KEY = os.getenv("BREVO_SMPT_KEY")  # Ensure this is your Sendinblue API key
 
 # Function to send a password reset email
 def send_reset_email(email: str, reset_token: str):
     if not API_KEY:
-        raise ValueError("BREVO_API_KEY is not set in the environment variables.")
+        raise ValueError("BREVO_SMPT_KEY is not set in the environment variables.")
     
+    # Initialize the Sendinblue configuration
     configuration = sib_api_v3_sdk.Configuration()
     configuration.api_key['api-key'] = API_KEY
 
@@ -21,7 +22,11 @@ def send_reset_email(email: str, reset_token: str):
     )
 
     subject = "Password Reset Request"
-    sender = {"name": "noreply", "email":MAIL}
+    
+    # The real email address will be used only behind the scenes, not shown to the recipient
+    sender = {"name": "Support Team", "email":SMTP_EMAIL}  # Alias email
+    reply_to = {"email":"80f2a6001@smtp-brevo.com"}  # Actual email to receive replies
+
     html_content = f"""
     <p>Hi,</p>
     <p>You requested a password reset. Use the token below:</p>
@@ -33,15 +38,16 @@ def send_reset_email(email: str, reset_token: str):
         to=[{"email": email}],
         subject=subject,
         sender=sender,
+        reply_to=reply_to,  # Set the "reply-to" email
         html_content=html_content,
     )
+
     try:
         print(f"DEBUG - Sending email to {email} with token {reset_token}")
         api_response = api_instance.send_transac_email(send_smtp_email)
         print(f"INFO - Email API Response: {api_response}")
         return api_response
     except ApiException as e:
-        error_message = f"Error sending email to {email}: {e}"
+        error_message = f"Error sending email to {email}: {e.body}"
         print(error_message)
         raise Exception(error_message)
-
