@@ -30,8 +30,7 @@ async def send_special_offers():
         logger.info("Starting to check loyalty points.")
         async with engine.connect() as conn:
             # Get users with points matching thresholds
-            result = await conn.execute(text(
-                """
+            result = await conn.execute(text("""
                 SELECT lp.client_id, u.email, lp.points 
                 FROM loyalty_program lp
                 JOIN users u ON lp.client_id = u.id
@@ -51,10 +50,10 @@ async def send_special_offers():
                     send_email(email,discount)
 
                     # Update points to avoid resending
-                    await conn.execute(text(
-                        "UPDATE loyalty_program SET points = points - :threshold WHERE client_id = :client_id",
-                        {"threshold": discount, "client_id": client_id},
-                    ))
+                    await conn.execute(
+                        text("UPDATE loyalty_program SET points = points - :threshold WHERE client_id = :client_id"),
+                        {"threshold": discount, "client_id": client_id}
+                    )
                     await conn.commit()
                     logger.info(f"Sent email to {email} with {discount}% discount.")
     except Exception as e:
@@ -66,3 +65,7 @@ async def manual_check_loyalty():
     """Manually trigger sending offers."""
     await send_special_offers()
     return {"status": "Offers sent if applicable!"}
+
+
+
+
