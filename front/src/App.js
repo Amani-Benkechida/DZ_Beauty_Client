@@ -2,6 +2,8 @@ import logo from './logo.svg';
 import './App.css';
 import Cards from './componenets/cards/Cards.js';
 import { Signup } from './auth/signup.js';
+
+import { login } from './auth/login.js';
 import Offrescard from './componenets/cards/Ofrrescard.js';
 import Cardsprestatiare from './componenets/cards/Cardsprestatiare.js';
 import ContactUs from './componenets/cards/ContactUs.js';
@@ -23,6 +25,7 @@ import Sidebar from './sidebare/Sidebare.js';
 import Services from './services/Services.js';
 import Ofres from './services/Ofres.js';
 import Contactus from './sidebare/Contact.js'
+import Profile from './homepage/profile.js';
 function App() {
   return (
     <div className="App">
@@ -45,7 +48,9 @@ function App() {
             <Route exact path="/comp" element={<Comp/>} />
             <Route path="/detail" element={<Onclick />} />
             <Route path="/profile" element={<Sidebar/>} />
-
+            <Route exact path="/signup" element={<Signup/>}/>
+            <Route exact path="/login" element={<Login/>}/>
+            <Route exact path="/profile" element={<Profile/>}/>
             
 
             
