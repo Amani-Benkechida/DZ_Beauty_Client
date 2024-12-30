@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import axios from 'axios'; // Import axios
-import image from './loginpic.png';
 import './login.css';
-import flower from './loginflower.png';
+import flower from  './loginflower.png'
+import image from './loginpic.png';
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const navigate = useNavigate();
 
-  const [email, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isChecked, setIsChecked] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(''); // To display error messages
+  const [errorMessage, setErrorMessage] = useState('');
 
   // Check if form is completely filled
   const isFormFilled = email.trim() !== '' && password.trim() !== '' && isChecked;
@@ -19,12 +19,17 @@ const Login = () => {
   const handleLogin = async () => {
     try {
       const response = await axios.post("http://127.0.0.1:8000/auth/login", {
-        email:email,
+        email: email,
         password: password,
       });
-      console.log(response.data); 
-      alert(response.data.message); 
-      navigate("/dashboard"); 
+
+      console.log(response.data);
+
+      // Save the token in localStorage
+      localStorage.setItem("token", response.data.token);
+
+      alert(response.data.message); // Display the success message
+      navigate("/dashboard"); // Navigate to the dashboard
     } catch (error) {
       if (error.response) {
         setErrorMessage(error.response.data.detail || "Login failed");
@@ -39,7 +44,7 @@ const Login = () => {
       <div className='w-1/2 h-full'>
         <img className='h-screen w-full' src={image} alt='Login Illustration' />
       </div>
-      <div className='w-1/2 mcnter'>
+      <div className='w-1/2 mcenter'>
         <div className="object-none h-full content-center mb-11 pb-11" style={{ width: "70%" }}>
           <div className='mb-7'>
             <div style={{ color: "#323232" }} className='font-semibold text-4xl pb-2'>
@@ -51,13 +56,13 @@ const Login = () => {
           </div>
 
           <div>
-            <p style={{ color: "#6F6F6F" }}> Email address</p>
+            <p style={{ color: "#6F6F6F" }}>Email address</p>
             <input
               style={{ borderColor: "#C1C1C1" }}
               className="border-solid border p-7 rounded-xl w-full h-10 mt-2 mb-5"
               type='text'
               value={email}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <p style={{ color: "#6F6F6F" }}>Password</p>
             <input
@@ -108,7 +113,7 @@ const Login = () => {
 
           <br />
           <p>You Don’t have an account? <a className="hover:underline cursor-pointer">Sign UP</a></p>
-          <img src={flower} className='absolute bottom-0 right-0  ' />
+          <img src={flower} className='absolute bottom-0 right-0  '/>
         </div>
       </div>
     </div>

@@ -83,37 +83,45 @@ const Profil = () => {
     }
   };
 
-  // Change password functionality
   const handleChangePassword = async () => {
     const token = localStorage.getItem("token");
     if (!token) {
       console.error("User is not logged in.");
       return;
     }
-
+  
+    const oldPassword = prompt("Enter your old password:");
+    const newPasswordInput = prompt("Enter your new password:");
+  
+    if (!oldPassword || !newPasswordInput) {
+      alert("Both old and new passwords are required!");
+      return;
+    }
+  
     try {
       const response = await fetch(`${API_BASE_URL}/change-password`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`, // Pass token in Authorization header
+          "Authorization": `Bearer ${token}`,
         },
         body: JSON.stringify({
-          old_password: prompt("Enter your old password:"),
-          new_password: newPassword,
+          old_password: oldPassword,
+          new_password: newPasswordInput,
         }),
       });
-
+  
       if (response.ok) {
         alert("Password changed successfully!");
       } else {
-        alert("Failed to change password.");
+        const errorText = await response.text();
+        alert(`Failed to change password: ${errorText}`);
       }
     } catch (error) {
       console.error("Error:", error);
     }
   };
-
+  
   return (
     <div className="font-poppins">
       <div className="flex relative">
