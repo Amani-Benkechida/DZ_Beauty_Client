@@ -49,6 +49,8 @@ async def init_db():
             id SERIAL PRIMARY KEY,
             user_id INTEGER UNIQUE REFERENCES users(id) ON DELETE CASCADE,
             portfolio TEXT,
+            gender VARCHAR(10), -- New column for gender
+            photo TEXT,  
             specializations TEXT,
             rating DECIMAL(3, 2) DEFAULT 0,
             reviews_count INTEGER DEFAULT 0
