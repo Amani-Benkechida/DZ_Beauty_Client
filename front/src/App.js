@@ -25,6 +25,7 @@ import Sidebar from './sidebare/Sidebare.js';
 import Services from './services/Services.js';
 import Ofres from './services/Ofres.js';
 import Contactus from './sidebare/Contact.js'
+import Sidebaradmin from './admin/Sidebaradmin.js';
 import Profile from './homepage/profile.js';
 function App() {
   return (
@@ -44,14 +45,14 @@ function App() {
           <Route path="/services" element={<Services/>} />
           <Route path="/offers" element={<Ofres/>} />
           <Route path="/Contactus" element={<Contactus/>} />
+          <Route exact path="/signup" element={<Signup/>} />
+          <Route exact path="/login" element={<Login/>} />
 
             <Route exact path="/comp" element={<Comp/>} />
             <Route path="/detail" element={<Onclick />} />
             <Route path="/profile" element={<Sidebar/>} />
-            <Route exact path="/signup" element={<Signup/>}/>
-            <Route exact path="/login" element={<Login/>}/>
-            <Route exact path="/profile" element={<Profile/>}/>
-            
+            <Route path="/admin" element={<Sidebaradmin/>}/>
+
 
             
           </Routes>

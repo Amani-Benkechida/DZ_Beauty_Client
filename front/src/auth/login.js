@@ -5,6 +5,7 @@ import flower from  './loginflower.png'
 import image from './loginpic.png';
 import { useNavigate } from "react-router-dom";
 
+
 const Login = () => {
   const navigate = useNavigate();
 
@@ -51,6 +52,7 @@ const Login = () => {
               Log In
             </div>
             <h5 style={{ color: "#323232" }} className='mb-3'>
+              You Don’t have an account? <a className="inline-block hover:underline cursor-pointer">Sign UP</a>
               You Don’t have an account? <a className="inline-block hover:underline cursor-pointer">Sign UP</a>
             </h5>
           </div>
@@ -104,10 +106,13 @@ const Login = () => {
               className='h-12 text-white text-xl w-3/5'
               disabled={!isFormFilled}
               onClick={handleLogin} 
+              onClick={handleLogin} 
             >
               Log In
             </button>
           </div>
+
+          {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>} 
 
           {errorMessage && <p style={{ color: "red" }}>{errorMessage}</p>} 
 

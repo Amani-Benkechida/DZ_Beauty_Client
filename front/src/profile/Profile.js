@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Sidebar from "../sidebare/Sidebare";
 
 const Profil = () => {
@@ -14,8 +15,7 @@ const Profil = () => {
   // Fetch profile data from the backend
   useEffect(() => {
     const fetchProfile = async () => {
-      const token = localStorage.getItem("token"); 
-   
+      const token = localStorage.getItem("token");
 
       if (!token) {
         console.error("User is not logged in.");
@@ -23,20 +23,14 @@ const Profil = () => {
       }
 
       try {
-        const response = await fetch(API_BASE_URL, {
-          method: "GET",
+        const response = await axios.get("http://127.0.0.1:8000/profile", {
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`, // Pass token in Authorization header
+            "Authorization": `Bearer ${token}`,
           },
         });
 
-        if (response.ok) {
-          const data = await response.json();
-          setProfileData(data);
-        } else {
-          console.error("Failed to fetch profile data:", await response.text());
-        }
+        setProfileData(response.data);
       } catch (error) {
         console.error("Error fetching profile:", error);
       }
@@ -63,16 +57,14 @@ const Profil = () => {
     }
 
     try {
-      const response = await fetch(API_BASE_URL, {
-        method: "PUT",
+      const response = await axios.put(API_BASE_URL, profileData, {
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`, // Pass token in Authorization header
+          "Authorization": `Bearer ${token}`,
         },
-        body: JSON.stringify(profileData),
       });
 
-      if (response.ok) {
+      if (response.status === 200) {
         alert("Profile updated successfully!");
         setIsEditing(false);
       } else {
@@ -83,39 +75,35 @@ const Profil = () => {
     }
   };
 
+  // Change password functionality
   const handleChangePassword = async () => {
     const token = localStorage.getItem("token");
     if (!token) {
       console.error("User is not logged in.");
       return;
     }
-  
-    const oldPassword = prompt("Enter your old password:");
-    const newPasswordInput = prompt("Enter your new password:");
-  
-    if (!oldPassword || !newPasswordInput) {
-      alert("Both old and new passwords are required!");
-      return;
-    }
-  
+
     try {
-      const response = await fetch(`${API_BASE_URL}/change-password`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`,
-        },
-        body: JSON.stringify({
+      const oldPassword = prompt("Enter your old password:");
+
+      const response = await axios.put(
+        `${API_BASE_URL}/change-password`,
+        {
           old_password: oldPassword,
-          new_password: newPasswordInput,
-        }),
-      });
-  
-      if (response.ok) {
+          new_password: newPassword,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
         alert("Password changed successfully!");
       } else {
-        const errorText = await response.text();
-        alert(`Failed to change password: ${errorText}`);
+        alert("Failed to change password.");
       }
     } catch (error) {
       console.error("Error:", error);
