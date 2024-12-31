@@ -23,6 +23,7 @@ import Sidebar from './sidebare/Sidebare.js';
 import Services from './services/Services.js';
 import Ofres from './services/Ofres.js';
 import Contactus from './sidebare/Contact.js'
+import Sidebaradmin from './admin/Sidebaradmin.js';
 function App() {
   return (
     <div className="App">
@@ -41,10 +42,14 @@ function App() {
           <Route path="/services" element={<Services/>} />
           <Route path="/offers" element={<Ofres/>} />
           <Route path="/Contactus" element={<Contactus/>} />
+          <Route exact path="/signup" element={<Signup/>} />
+          <Route exact path="/login" element={<Login/>} />
 
             <Route exact path="/comp" element={<Comp/>} />
             <Route path="/detail" element={<Onclick />} />
             <Route path="/profile" element={<Sidebar/>} />
+            <Route path="/admin" element={<Sidebaradmin/>}/>
+
 
             
 

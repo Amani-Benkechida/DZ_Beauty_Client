@@ -10,6 +10,7 @@ import vect from './Vector (2).png'
 import Calenda from './C';
 import robot from './google_recaptcha-official 2.png'
 import datas from '../info.json'
+import axios from 'axios';
 
 const Onclick = () => {
   const {stylist,Oclick} = useStylists();
@@ -42,6 +43,16 @@ const Onclick = () => {
     const [interd,setInterd]=useState([])
     const [afiche,setafiche]=useState(false)
     const [globaldate,setdateGlobal]=useState(false)
+    const [email, setEmail] = useState('');
+const [password, setPassword] = useState('');
+const [errorMessage, setErrorMessage] = useState('');
+
+      // Login form state
+      const [username, setUsername] = useState('');
+      const [signupEmail, setSignupEmail] = useState('');
+      const [signupPassword, setSignupPassword] = useState('');
+      const [confirmPassword, setConfirmPassword] = useState('');
+      const [signupError, setSignupError] = useState('');
     const handleClick = (date) => {
       if (!freeday.includes(date)) {
         // Handle non-free day clicks
@@ -61,7 +72,6 @@ const Onclick = () => {
     };
     
 
-    console.log('la date selectipnees est',globaldate)
 
     const afichagedetab = (selectedDate) => {
       if (freeday.includes(selectedDate)) {
@@ -70,13 +80,52 @@ const Onclick = () => {
         setafiche(true); // Show table otherwise
       }
     };
+    const handleSignup = async () => {
+      if (signupPassword !== confirmPassword) {
+        setSignupError("Passwords do not match!");
+        return;
+      }
+    
+      try {
+        const response = await axios.post("http://127.0.0.1:8000/auth/signup", {
+          username,
+          email: signupEmail,
+          password: signupPassword,
+        });
+        alert(response.data.message);
+        setSign(false); // Close the sign-up modal
+      } catch (error) {
+        if (error.response) {
+          setSignupError(error.response.data.detail || "Sign-up failed");
+        } else {
+          setSignupError("An unexpected error occurred");
+        }
+      }
+    };
+    
     
 
    
 
 
 
-
+    const handleLogin = async () => {
+      try {
+        const response = await axios.post("http://127.0.0.1:8000/auth/login", {
+          email:email,
+          password: password,
+        });
+        console.log(response.data); 
+        alert(response.data.message); 
+      
+      } catch (error) {
+        if (error.response) {
+          setErrorMessage(error.response.data.detail || "Login failed");
+        } else {
+          setErrorMessage("An unexpected error occurred");
+        }
+      }
+    };
    
 
 
@@ -283,10 +332,10 @@ const Onclick = () => {
       <div  style={{color:'#6F6F6F'}} className='pt-2 pb-2'>
       User name Or Email
       </div>
-      <input className='w-full border p-2 rounded-lg '   type='text'/>
+      <input   onChange={(e) => setEmail(e.target.value)} className='w-full border p-2 rounded-lg '   type='text'/>
       <div className='pt-2 pb-2 ' style={{color:'#6F6F6F'}}> Password</div>
-      <input type='password' className='w-full border p-2 rounded-lg '/>
-      <button className='w-full text-white  p-2  mt-4' style={{background:"#CB8587"}}>Log In</button>
+      <input   onChange={(e) => setPassword(e.target.value)} type='password' className='w-full border p-2 rounded-lg '/>
+      <button onClick={handleLogin} className='w-full text-white  p-2  mt-4' style={{background:"#CB8587"}}>Log In</button>
       <div style={{color:'#6F6F6F'}} className='pt-2  justify-center items-center flex mt-4' >
       Forgot password ?
       </div>
@@ -312,18 +361,19 @@ const Onclick = () => {
     <div className='m-7'>
       <div  style={{color:'#6F6F6F'}} className='pt-2 pb-2'>
       User name
+
       </div>
       <input className='w-full border p-2 rounded-lg '   type='text'/>
       <div  style={{color:'#6F6F6F'}} className='pt-2 pb-2'>
        Email
       </div>
-      <input className='w-full border p-2 rounded-lg '   type='text'/>
+      <input  onChange={(e) => setEmail(e.target.value)}  className='w-full border p-2 rounded-lg '   type='text'/>
 
       <div className='pt-2 pb-2 ' style={{color:'#6F6F6F'}}> Password</div>
       <input type='password' className='w-full border p-2 rounded-lg '/>
       <div className='pt-2 pb-2 ' style={{color:'#6F6F6F'}}>Use 8 or more characters with a mix of letters, numbers & symbols</div>
       <div className='pt-2 pb-2 ' style={{color:'#6F6F6F'}}> Confirm Password</div>
-      <input type='password' className='w-full border p-2  rounded-lg mb-4 '/>
+      <input  onChange={(e) => setPassword(e.target.value)}  type='password' className='w-full border p-2  rounded-lg mb-4 '/>
       
       <div className="pb-4">
             <p style={{ color: "#6F6F6F" }} className="text-lg">
@@ -345,6 +395,8 @@ const Onclick = () => {
               type="checkbox"
               className="text-white font-bold p-15 mr-5 w-4 rounded accent-green-600"
               name="isNotRobot"
+
+
                
               
             />
@@ -355,7 +407,7 @@ const Onclick = () => {
             <img className=' absolute right-2 bottom-1' src={robot}/>
           </div>
      
-      <button className='w-full text-white p-2 ' style={{background:"#CB8587"}}>Create Account</button>
+      <button Onclick={()=>{handleSignup}} className='w-full text-white p-2 ' style={{background:"#CB8587"}}>Create Account</button>
 
     </div>
     </div></div>}
