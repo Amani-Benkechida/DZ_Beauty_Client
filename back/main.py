@@ -7,7 +7,6 @@ from setup.database import SessionLocal
 from fastapi.middleware.cors import CORSMiddleware
 from typing import Dict, List, Optional
 from datetime import datetime, date, time
-from auth.auth import router as auth_router
 from review.review import router as reviews_router
 from offers.loyality import router as loyality_router
 from offers.specialOffer import router as spacialOffer_router
@@ -43,11 +42,18 @@ async def startup_event():
 async def shutdown_event():
     scheduler.shutdown()
 
+@app.get("/")
+async def get_all_reservations_route(db: AsyncSession = Depends(get_db)):
+    reservations = await get_all_reservations(db)
+    return reservations
+
+@app.post("/cancel/{reservation_id}")
+async def cancel_reservation_route(reservation_id: int, db: AsyncSession = Depends(get_db)):
+    result = await cancel_reservation(reservation_id, db)
+    return result
 
 
 # Register Routers
-
-app.include_router(auth_router)
 app.include_router(reviews_router)
 app.include_router(loyality_router)
 app.include_router(spacialOffer_router)
