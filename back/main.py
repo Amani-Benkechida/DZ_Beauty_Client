@@ -16,7 +16,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from reservation.payment import router as payment_router
 from reservation.cancel_reservation import cancel_reservation
 from reservation.get_all_reservations import get_all_reservations
-
+from prestataire_service.add_prestataire_service import add_prestataire_to_service
 
 # Initialize FastAPI Application
 app = FastAPI()
@@ -51,6 +51,13 @@ async def get_all_reservations_route(db: AsyncSession = Depends(get_db)):
 async def cancel_reservation_route(reservation_id: int, db: AsyncSession = Depends(get_db)):
     result = await cancel_reservation(reservation_id, db)
     return result
+
+@app.post("/add-prestataire-to-service/")
+async def add_prestataire_to_service_route(prestataire_id: int,service_id: int,db: AsyncSession = Depends(get_db)):
+    result = await add_prestataire_to_service(prestataire_id, service_id, db)
+    return result
+
+
 
 
 # Register Routers
