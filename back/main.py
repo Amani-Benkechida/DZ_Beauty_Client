@@ -42,10 +42,17 @@ async def startup_event():
 async def shutdown_event():
     scheduler.shutdown()
 
-@app.get("/")
+@app.get("/reservations")
 async def get_all_reservations_route(db: AsyncSession = Depends(get_db)):
     reservations = await get_all_reservations(db)
     return reservations
+
+@app.put("/reservations/{reservation_id}")
+async def update_reservation_status(reservation_id: int, status: str, session: AsyncSession = Depends(get_session)):
+    query = text("UPDATE reservations SET status = :status WHERE id = :id")
+    await session.execute(query, {"status": status, "id": reservation_id})
+    await session.commit()
+    return {"message": "Reservation status updated"}
 
 @app.post("/cancel/{reservation_id}")
 async def cancel_reservation_route(reservation_id: int, db: AsyncSession = Depends(get_db)):
