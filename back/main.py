@@ -17,6 +17,7 @@ from reservation.payment import router as payment_router
 from reservation.cancel_reservation import cancel_reservation
 from reservation.get_all_reservations import get_all_reservations
 from prestataire_service.add_prestataire_service import add_prestataire_to_service
+from prestataire_service.get_prestataire import get_all_prestataires_by_service
 
 # Initialize FastAPI Application
 app = FastAPI()
@@ -46,9 +47,13 @@ async def shutdown_event():
 async def get_all_reservations_route(db: AsyncSession = Depends(get_db)):
     reservations = await get_all_reservations(db)
     return reservations
+@app.get("/prestataire")
+async def get_all_prestataires_by_service_route(service_id: int ,db: AsyncSession = Depends(get_db)):
+    result = await get_all_prestataires_by_service(service_id,db)
+    return result
 
 @app.put("/reservations/{reservation_id}")
-async def update_reservation_status(reservation_id: int, status: str, session: AsyncSession = Depends(get_session)):
+async def update_reservation_status(reservation_id: int, status: str, session: AsyncSession = Depends(get_db)):
     query = text("UPDATE reservations SET status = :status WHERE id = :id")
     await session.execute(query, {"status": status, "id": reservation_id})
     await session.commit()
@@ -72,5 +77,7 @@ app.include_router(reviews_router)
 app.include_router(loyality_router)
 app.include_router(spacialOffer_router)
 app.include_router(payment_router)
+
+
 
 
