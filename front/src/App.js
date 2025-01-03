@@ -2,6 +2,8 @@ import logo from './logo.svg';
 import './App.css';
 import Cards from './componenets/cards/Cards.js';
 import { Signup } from './auth/signup.js';
+
+import { login } from './auth/login.js';
 import Offrescard from './componenets/cards/Ofrrescard.js';
 import Cardsprestatiare from './componenets/cards/Cardsprestatiare.js';
 import ContactUs from './componenets/cards/ContactUs.js';
@@ -24,6 +26,11 @@ import Services from './services/Services.js';
 import Ofres from './services/Ofres.js';
 import Contactus from './sidebare/Contact.js'
 import Sidebaradmin from './admin/Sidebaradmin.js';
+import Profile from './homepage/profile.js';
+import Body from './services/body therapy/body.jsx';
+
+import Facial from './services/facial and skin/facial.jsx';
+import Nail from './services/Nail/nail.jsx';
 function App() {
   return (
     <div className="App">
@@ -45,13 +52,19 @@ function App() {
           <Route exact path="/signup" element={<Signup/>} />
           <Route exact path="/login" element={<Login/>} />
 
-            <Route exact path="/comp" element={<Comp/>} />
+            <Route exact path="/prestataire" element={<Comp/>} />
             <Route path="/detail" element={<Onclick />} />
             <Route path="/profile" element={<Sidebar/>} />
             <Route path="/admin" element={<Sidebaradmin/>}/>
-
-
+            <Route path="/body" element={<Body/>}/>
+            <Route path="/facial" element={<Facial/>}/>
+        
+            <Route path="/nail" element={<Nail/>}/>
             
+       
+           
+
+
 
             
           </Routes>

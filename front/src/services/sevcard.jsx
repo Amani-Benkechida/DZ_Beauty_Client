@@ -1,6 +1,9 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
+
 
 const ServiceCard = ({ image, title, description, time, price, discount }) => {
+  const navigate=useNavigate()
   return (
     <div className="max-w-sm mx-auto bg-white overflow-hidden">
       <div className="relative">
@@ -16,7 +19,7 @@ const ServiceCard = ({ image, title, description, time, price, discount }) => {
         )}
       </div>
       {/* Button directly under the image with slight transparency */}
-      <button className="w-full py-2 bg-[#323232]  text-white text-center font-semibold">
+      <button onClick={()=>navigate('/prestataire')} className="w-full py-2 bg-[#323232]  text-white text-center font-semibold">
         Book Now
       </button>
       {/* Content Section */}

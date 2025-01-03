@@ -38,7 +38,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="C:\Users\mn620\Desktop\DZ_Beauty_Client-amani\back\env"
+VIRTUAL_ENV="C:\Users\mn620\Desktop\aminag03\DZ_Beauty_Client-amani\back\env"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"

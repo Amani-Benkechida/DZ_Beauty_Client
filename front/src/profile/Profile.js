@@ -109,7 +109,7 @@ const Profil = () => {
       console.error("Error:", error);
     }
   };
-
+  
   return (
     <div className="font-poppins">
       <div className="flex relative">

@@ -11,7 +11,9 @@ import Calenda from './C';
 import robot from './google_recaptcha-official 2.png'
 import datas from '../info.json'
 import axios from 'axios';
-
+import Navbar from '../homepage/navbar';
+import Header from '../homepage/header';
+import { useEffect } from 'react';
 const Onclick = () => {
   const {stylist,Oclick} = useStylists();
   const freeday = [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22];
@@ -49,10 +51,65 @@ const [errorMessage, setErrorMessage] = useState('');
 
       // Login form state
       const [username, setUsername] = useState('');
-      const [signupEmail, setSignupEmail] = useState('');
-      const [signupPassword, setSignupPassword] = useState('');
-      const [confirmPassword, setConfirmPassword] = useState('');
-      const [signupError, setSignupError] = useState('');
+  const [signupEmail, setSignupEmail] = useState('');
+  const [signupPassword, setSignupPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [errorMessages, setErrorMessages] = useState([]);
+  const [toke, settoke] = useState(false);
+
+  useEffect(() => {
+    // Check if the token exists in localStorage
+    const token = localStorage.getItem("token");
+
+    if (token) {
+      settoke(true); // If token exists, set toke to true
+    } else {
+      settoke(false); // Otherwise, set toke to false
+    }
+  }, []);
+  const validateForm = () => {
+    const errors = [];
+
+    // Check if all fields are filled
+    if (!username || !signupEmail || !signupPassword || !confirmPassword) {
+      errors.push('Please fill out all fields.');
+    }
+
+    // Validate email format
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    if (!emailRegex.test(signupEmail)) {
+      errors.push('Please enter a valid email address.');
+    }
+
+    // Validate password (at least 8 characters, with letters, numbers, and symbols)
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,}$/;
+    if (!passwordRegex.test(signupPassword)) {
+      errors.push('Password must be at least 8 characters long and contain letters, numbers, and symbols.');
+    }
+
+    // Check if passwords match
+    if (signupPassword !== confirmPassword) {
+      errors.push('Passwords do not match.');
+    }
+
+    return errors;
+  };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     const handleClick = (date) => {
       if (!freeday.includes(date)) {
         // Handle non-free day clicks
@@ -80,44 +137,56 @@ const [errorMessage, setErrorMessage] = useState('');
         setafiche(true); // Show table otherwise
       }
     };
-    const handleSignup = async () => {
-      if (signupPassword !== confirmPassword) {
-        setSignupError("Passwords do not match!");
-        return;
-      }
-    
-      try {
-        const response = await axios.post("http://127.0.0.1:8000/auth/signup", {
-          username,
-          email: signupEmail,
-          password: signupPassword,
-        });
-        alert(response.data.message);
-        setSign(false); // Close the sign-up modal
-      } catch (error) {
-        if (error.response) {
-          setSignupError(error.response.data.detail || "Sign-up failed");
-        } else {
-          setSignupError("An unexpected error occurred");
-        }
-      }
-    };
-    
+   
     
 
    
 
 
+    const [loading, setLoading] = useState(false);
 
+    const validateFor = () => {
+      const errors = [];
+  
+      // Check if both fields are filled
+      if (!email || !password) {
+        errors.push('Please fill out both the email/username and password fields.');
+      }
+  
+      // Validate email format if email is provided
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+      if (email && !emailRegex.test(email)) {
+        errors.push('Please enter a valid email address.');
+      }
+  
+      return errors;
+    };
+  
+   
     const handleLogin = async () => {
+      const errors = validateFor();
+      if (errors.length > 0) {
+        setErrorMessages(errors);
+      } else {
+        // Proceed to login logic
+        setLoading(true);
       try {
         const response = await axios.post("http://127.0.0.1:8000/auth/login", {
-          email:email,
+          email: email,
           password: password,
         });
-        console.log(response.data); 
-        alert(response.data.message); 
-      
+
+  
+        console.log(response.data);
+  
+        // Save the token in localStorage
+        localStorage.setItem("token", response.data.token);
+        setLogin(false);
+  
+        alert(response.data.message); // Display the success message
+        fetchProfile()
+
+       
       } catch (error) {
         if (error.response) {
           setErrorMessage(error.response.data.detail || "Login failed");
@@ -125,15 +194,98 @@ const [errorMessage, setErrorMessage] = useState('');
           setErrorMessage("An unexpected error occurred");
         }
       }
+    };}
+
+  
+    const handleCreateAccount = () => {
+      const errors = validateForm();
+      if (errors.length > 0) {
+        setErrorMessages(errors);
+      } else {
+        // Proceed to submit form data
+        handleSubmit();
+      }
     };
-   
+  
+    const handleSubmit = async (e) => {
+      e && e.preventDefault(); // Prevent the default form submission if event is passed
+  
+      if (validateForm().length === 0) {
+      
+        try {
+          const response = await axios.post('http://127.0.0.1:8000/auth/register', {
+            name: username,
+            email: signupEmail,
+            password: signupPassword,
+            role: 'client',
+          });
+  
+          alert('Registration successful!');
+          fetchProfile()
+        
+          setSign(false); // Close modal
+          // Redirect to login page after success
+        } catch (error) {
+          
+          if (error.response && error.response.data.detail) {
+            alert(error.response.data.detail);
+          } else {
+            alert('An error occurred. Please try again later.');
+          }
+        }
+      }
+    };
+    const API_BASE_URL = "http://127.0.0.1:8000/profile";
+      
+        // Fetch profile data from the backend
+        
+          const fetchProfile = async () => {
+            const token = localStorage.getItem("token"); 
+         
+      
+            if (!token) {
+              console.error("User is not logged in.");
+              return;
+            }
+      
+            try {
+              const response = await fetch(API_BASE_URL, {
+                method: "GET",
+                headers: {
+                  "Content-Type": "application/json",
+                  "Authorization": `Bearer ${token}`, // Pass token in Authorization header
+                },
+              });
+      
+              if (response.ok) {
+                const data = await response.json();
+              
+                if (data.name && data.name.length > 0) {
+                  const firstLetter = data.name.charAt(0).toUpperCase();
+                 
+                  localStorage.setItem("firstletter", firstLetter); // Save in localStorage
+                }
+                
+              } else {
+                console.error("Failed to fetch profile data:", await response.text());
+              }
+            } catch (error) {
+              console.error("Error fetching profile:", error);
+            }
+          };
+      
+      
 
 
 
   return (
+    <div>
+    <Navbar/>
+    <Header/>
+
     <div  className='p-10   relative    '>
 
-<div  className={login ? 'p-10 inset-0  filter blur-sm z-0 ':'p-10 inset-0 z-0'}>
+<div  className={login && toke==false ? 'p-10 inset-0  filter blur-sm z-0 ':'p-10 inset-0 z-0'}>
   
 
 
@@ -317,104 +469,188 @@ const [errorMessage, setErrorMessage] = useState('');
     </div>
     </div>
     
+    
+    {login && !Sign && toke==false &&  (
+        <div className=''>
+          <div className='font-poppins shadow-xl shadow-gray-300 absolute bg-white w-1/2 items-center justify-center left-80 bottom-80 z-50'>
+            <div className='flex relative text-white' style={{ background: '#CB8587' }}>
+              <div className='p-2 pl-4'>Log In to continue</div>
+              <button
+                onClick={() => {
+                  setLogin(false);
+                }}
+                className='text-white text-2xl bg-none border-none cursor-pointer absolute right-0'
+              >
+                &times;
+              </button>
+            </div>
 
-    {login && !Sign&&<div className=''>
-    <div className=' font-poppins  shadow-xl shadow-gray-300 absolute bg-white w-1/2 items-center justify-center  left-80 bottom-80 z-50   '>
-    <div  className='flex relative text-white' style={{background:"#CB8587"}}>
-    <div className='p-2 pl-4'>Log In to continue</div>
-    <button onClick={()=>{setLogin(false)}} class="text-white text-2xl bg-none border-none cursor-pointer absolute right-0">
-  &times;
-</button>
+            <div className='m-7'>
+              {/* Error messages */}
+              {errorMessages.length > 0 && (
+                <div className='mb-4'>
+                  {errorMessages.map((error, index) => (
+                    <div key={index} className='text-red-500'>{error}</div>
+                  ))}
+                </div>
+              )}
 
+              <div style={{ color: '#6F6F6F' }} className='pt-2 pb-2'>
+                User name Or Email
+              </div>
+              <input
+                className='w-full border p-2 rounded-lg'
+                type='text'
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
 
-    </div>
-    <div className='m-7'>
-      <div  style={{color:'#6F6F6F'}} className='pt-2 pb-2'>
-      User name Or Email
-      </div>
-      <input   onChange={(e) => setEmail(e.target.value)} className='w-full border p-2 rounded-lg '   type='text'/>
-      <div className='pt-2 pb-2 ' style={{color:'#6F6F6F'}}> Password</div>
-      <input   onChange={(e) => setPassword(e.target.value)} type='password' className='w-full border p-2 rounded-lg '/>
-      <button onClick={handleLogin} className='w-full text-white  p-2  mt-4' style={{background:"#CB8587"}}>Log In</button>
-      <div style={{color:'#6F6F6F'}} className='pt-2  justify-center items-center flex mt-4' >
-      Forgot password ?
-      </div>
-    <div className='border border-b-gray-400 mb-5 mt-4'></div>
+              <div className='pt-2 pb-2' style={{ color: '#6F6F6F' }}>
+                Password
+              </div>
+              <input
+                type='password'
+                className='w-full border p-2 rounded-lg'
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
 
-      <button  onClick={()=>{setSign(true);}}  className='w-full text-white p-2 ' style={{background:"#CB8587"}}>Create Account</button>
+              <button
+                onClick={handleLogin}
+                className='w-full text-white p-2 mt-4'
+                style={{ background: '#CB8587' }}
+                disabled={loading}
+              >
+                {loading ? 'Logging In...' : 'Log In'}
+              </button>
 
-    </div>
-    </div></div>}
-    {Sign && 
+              <div style={{ color: '#6F6F6F' }} className='pt-2 justify-center items-center flex mt-4'>
+                Forgot password?
+              </div>
+              <div className='border border-b-gray-400 mb-5 mt-4'></div>
 
+              <button
+                onClick={() => {
+                  setSign(true);
+                }}
+                className='w-full text-white p-2'
+                style={{ background: '#CB8587' }}
+              >
+                Create Account
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    {Sign && (
+        <div className=''>
+          <div className='font-poppins shadow-xl shadow-gray-300 absolute bg-white w-1/2 items-center justify-center left-80 bottom-80 z-50'>
+            <div className='flex relative text-white' style={{ background: '#CB8587' }}>
+              <div className='p-2 pl-4'>Create Account</div>
+              <button
+                onClick={() => {
+                  setSign(false);
+                }}
+                className='text-white text-2xl bg-none border-none cursor-pointer absolute right-0'
+              >
+                &times;
+              </button>
+            </div>
 
-    <div className=''>
-    <div className=' font-poppins  shadow-xl shadow-gray-300 absolute bg-white w-1/2 items-center justify-center  left-80 bottom-80 z-50   '>
-    <div  className='flex relative text-white' style={{background:"#CB8587"}}>
-    <div className='p-2 pl-4'>Create Account</div>
-    <button onClick={()=>{setSign(false);setLogin(false)}} class="text-white text-2xl bg-none border-none cursor-pointer absolute right-0">
-  &times;
-</button>
+            <div className='m-7'>
+              {/* Error messages */}
+              {errorMessages.length > 0 && (
+                <div className='mb-4'>
+                  {errorMessages.map((error, index) => (
+                    <div key={index} className='text-red-500'>{error}</div>
+                  ))}
+                </div>
+              )}
 
+              <div style={{ color: '#6F6F6F' }} className='pt-2 pb-2'>
+                User name
+              </div>
+              <input
+                className='w-full border p-2 rounded-lg'
+                type='text'
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+              />
 
-    </div>
-    <div className='m-7'>
-      <div  style={{color:'#6F6F6F'}} className='pt-2 pb-2'>
-      User name
+              <div style={{ color: '#6F6F6F' }} className='pt-2 pb-2'>
+                Email
+              </div>
+              <input
+                className='w-full border p-2 rounded-lg'
+                type='text'
+                value={signupEmail}
+                onChange={(e) => setSignupEmail(e.target.value)}
+              />
 
-      </div>
-      <input className='w-full border p-2 rounded-lg '   type='text'/>
-      <div  style={{color:'#6F6F6F'}} className='pt-2 pb-2'>
-       Email
-      </div>
-      <input  onChange={(e) => setEmail(e.target.value)}  className='w-full border p-2 rounded-lg '   type='text'/>
+              <div className='pt-2 pb-2' style={{ color: '#6F6F6F' }}>
+                Password
+              </div>
+              <input
+                type='password'
+                className='w-full border p-2 rounded-lg'
+                value={signupPassword}
+                onChange={(e) => setSignupPassword(e.target.value)}
+              />
 
-      <div className='pt-2 pb-2 ' style={{color:'#6F6F6F'}}> Password</div>
-      <input type='password' className='w-full border p-2 rounded-lg '/>
-      <div className='pt-2 pb-2 ' style={{color:'#6F6F6F'}}>Use 8 or more characters with a mix of letters, numbers & symbols</div>
-      <div className='pt-2 pb-2 ' style={{color:'#6F6F6F'}}> Confirm Password</div>
-      <input  onChange={(e) => setPassword(e.target.value)}  type='password' className='w-full border p-2  rounded-lg mb-4 '/>
-      
-      <div className="pb-4">
-            <p style={{ color: "#6F6F6F" }} className="text-lg">
-              By creating an account, you agree to our
-              <div className="flex">
-                <p className="pr-2 text-lg" style={{ color: "#323232" }}>
-                  Terms of use
-                </p>
-                <p className="pr-2">and</p>{" "}
-                <p style={{ color: "#323232" }} className="text-lg">
-                  Privacy Policy
+              <div className='pt-2 pb-2' style={{ color: '#6F6F6F' }}>
+                Confirm Password
+              </div>
+              <input
+                type='password'
+                className='w-full border p-2 rounded-lg mb-4'
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
+
+              <div className="pb-4">
+                <p style={{ color: "#6F6F6F" }} className="text-lg">
+                  By creating an account, you agree to our
+                  <div className="flex">
+                    <p className="pr-2 text-lg" style={{ color: "#323232" }}>
+                      Terms of use
+                    </p>
+                    <p className="pr-2">and</p>
+                    <p style={{ color: "#323232" }} className="text-lg">
+                      Privacy Policy
+                    </p>
+                  </div>
                 </p>
               </div>
-            </p>
+
+              <div className="flex border-black border w-3/4 mb-6 rounded-xl p-4 relative">
+                <input
+                  style={{ borderRadius: "10px" }}
+                  type="checkbox"
+                  className="text-white font-bold p-15 mr-5 w-4 rounded accent-green-600"
+                  name="isNotRobot"
+                />
+                <p style={{ color: "#6F6F6F" }} className="text-lg">
+                  I'm not a robot
+                </p>
+
+                <img className='absolute right-2 bottom-1' src={robot} />
+              </div>
+
+              <button
+                onClick={handleCreateAccount}
+                className='w-full text-white p-2'
+                style={{ background: '#CB8587' }}
+              >
+                Create Account
+              </button>
+            </div>
           </div>
-          <div className="flex border-black border w-3/4 mb-6 rounded-xl p-4 relative">
-            <input
-              style={{ borderRadius: "10px" }}
-              type="checkbox"
-              className="text-white font-bold p-15 mr-5 w-4 rounded accent-green-600"
-              name="isNotRobot"
-
-
-               
-              
-            />
-            <p style={{ color: "#6F6F6F" }} className="text-lg ">
-               I'm not a robot
-            </p>
-            
-            <img className=' absolute right-2 bottom-1' src={robot}/>
-          </div>
-     
-      <button Onclick={()=>{handleSignup}} className='w-full text-white p-2 ' style={{background:"#CB8587"}}>Create Account</button>
-
-    </div>
-    </div></div>}
+        </div>
+      )}
 
 
       
-    </div>
+    </div></div>
 
 
   )

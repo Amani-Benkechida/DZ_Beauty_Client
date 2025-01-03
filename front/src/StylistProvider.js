@@ -23,6 +23,7 @@ const stylistData = [
 
 
 
+
 // Context Provider Component
 export const StylistProvider = ({ children }) => {
     const [Oclick,setOlick]=useState(2)
@@ -30,9 +31,11 @@ export const StylistProvider = ({ children }) => {
         setOlick(id)
 
     }
+    const [firstletter,setFirstletr]=useState('')
+
 
   return (
-    <StylistContext.Provider value={{stylistData,Oclick,fun}}>
+    <StylistContext.Provider value={{stylistData,Oclick,fun,firstletter,setFirstletr}}>
       {children}
     </StylistContext.Provider>
   );

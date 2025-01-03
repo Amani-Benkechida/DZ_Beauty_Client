@@ -89,7 +89,7 @@ const Body = () => {
       </section>
 
       {/* Title for Hair Services aligned with service cards */}
-      <div className="mb-12 text-left w-full max-w-screen-xl mx-auto">
+      <div className="mb-12 text-left w-full max-w-screen-xl mx-auto ">
         <h2
           className="font-klaristha text-[72px] font-light leading-[72px] "
           style={{ fontWeight: 250 }}
@@ -99,7 +99,7 @@ const Body = () => {
       </div>
 
       {/* Hair Services Section */}
-      <div className="flex justify-center">
+      <div className="flex justify-center font-poppins">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full max-w-screen-xl">
           {services.map((service, index) => (
             <ServiceCard key={index} {...service} />

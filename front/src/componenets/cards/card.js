@@ -1,8 +1,10 @@
 import react from 'react'
 import './card.css'
 import img from './arrow-right.png'
+import { useNavigate } from 'react-router-dom'
 
-const Card=({image,name})=>{
+const Card=({image,name,click})=>{
+    const navigate=useNavigate()
 
 
 
@@ -15,7 +17,7 @@ const Card=({image,name})=>{
       
         </div>
 
-        <button  style={{fontSize:'15px',fontWeight:'100'}} className="mbutton flex items-center font-poppins  relative space-x-2">
+        <button  onClick={() => navigate(`/${click}`)} style={{fontSize:'15px',fontWeight:'100'}} className="mbutton flex items-center font-poppins  relative space-x-2">
   View More
   <img src={img} alt="icon" className="w-6 h-5 absolute right-5" />
 </button>

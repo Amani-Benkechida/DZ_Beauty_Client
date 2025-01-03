@@ -96,6 +96,7 @@ export const Signup = () => {
             <a
             /*   onClick={() => navigate("/login")} */
               className="hover:underline cursor-pointer"
+              onClick={()=>{navigate("/Login")}} 
             >
               Log in
             </a>
@@ -222,6 +223,7 @@ export const Signup = () => {
               <p
               /*   onClick={() => navigate("/login")} */
                 className="hover:underline cursor-pointer"
+                onClick={()=>{navigate("/Login")}}
               >
                 Log in
               </p>

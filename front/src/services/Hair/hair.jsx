@@ -6,7 +6,7 @@ import img2 from './img2.png';
 import img3 from './img3.png';
 import img4 from './img4.png';
 import flower from './../loginflower.png';
-import Navbar from "../../homePage/navbar";
+import Navbar from "../../homepage/navbar"
 import Header from "../../propos/header copy";
 import Footer from "../../footerfile.jsx/footer";
 const Hair = () => {

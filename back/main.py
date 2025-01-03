@@ -69,3 +69,4 @@ app.include_router(loyality_router)
 app.include_router(spacialOffer_router)
 app.include_router(payment_router)
 
+

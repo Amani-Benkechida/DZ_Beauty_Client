@@ -49,6 +49,8 @@ async def init_db():
             id SERIAL PRIMARY KEY,
             user_id INTEGER UNIQUE REFERENCES users(id) ON DELETE CASCADE,
             portfolio TEXT,
+            gender VARCHAR(10), -- New column for gender
+            photo TEXT,  
             specializations TEXT,
             rating DECIMAL(3, 2) DEFAULT 0,
             reviews_count INTEGER DEFAULT 0
@@ -66,23 +68,21 @@ async def init_db():
         );
         """))
 
-  # Create `reservations` table
-        await conn.execute(text(""" 
-    CREATE TABLE IF NOT EXISTS reservations (
-       id SERIAL PRIMARY KEY,  -- This line needs to be followed by a comma
-       client_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
-       prestataire_id INTEGER REFERENCES prestataire_profiles(id) ON DELETE CASCADE,
-       service_id INTEGER REFERENCES services(id) ON DELETE CASCADE,
-       date DATE NOT NULL,
-       time TIME NOT NULL,  
-       end_time TIME NOT NULL, 
-       status VARCHAR(50) DEFAULT 'pending' NOT NULL,
-       total_price DECIMAL(10, 2) NOT NULL,
-      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-       );
-"""))
-
-
+        # Create `reservations` table
+        await conn.execute(text("""
+        CREATE TABLE IF NOT EXISTS reservations (
+            id SERIAL PRIMARY KEY
+            client_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+            prestataire_id INTEGER REFERENCES prestataire_profiles(id) ON DELETE CASCADE,
+            service_id INTEGER REFERENCES services(id) ON DELETE CASCADE,
+            date DATE NOT NULL,
+            time TIME NOT NULL,  
+            end_time TIME NOT NULL, 
+            status VARCHAR(50) DEFAULT 'pending' NOT NULL,
+            total_price DECIMAL(10, 2) NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+        """))
 
         # Create `loyalty_program` table
         await conn.execute(text("""

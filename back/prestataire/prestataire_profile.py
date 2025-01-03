@@ -1,101 +1,111 @@
-import bcrypt
-from fastapi import APIRouter, Depends, HTTPException, status,Query
+from typing import List, Optional
+from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File, Form
 from sqlalchemy.ext.asyncio import AsyncSession
 from setup.database import get_db
-from datetime import datetime, timedelta,time
+from datetime import datetime
 from sqlalchemy import text
-from auth.models import CreatePrestataireRequest 
-
+import shutil
+import os
+from passlib.context import CryptContext
+from dotenv import load_dotenv
 router = APIRouter(prefix="/prestataire", tags=["PROFILE"])
 
+load_dotenv()
+DEFAULT_PASSWORD= os.getenv("DEFAULT_PASSWORD")
+
+UPLOAD_DIR = "./uploaded_photos"
+if not os.path.exists(UPLOAD_DIR):
+    os.makedirs(UPLOAD_DIR)
 
 
-
-
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 @router.post("/create")
-async def create_prestataire(request: CreatePrestataireRequest, db: AsyncSession = Depends(get_db)):
-    # Step 1: Check if the email already exists
+async def create_prestataire(
+    name: str = Form(...),
+    family_name: str = Form(...),
+    phone_number: str = Form(...),
+    email: str = Form(...),
+    position: str = Form(...),
+    gender: str = Form(...),
+    photo: UploadFile = File(...),
+    availabilities: Optional[str] = Form(None),
+    db: AsyncSession = Depends(get_db)
+):
+   
+   # print(f"Received name: {name}")
+   # print(f"Received family name: {family_name}")
+    #print(f"Received phone number: {phone_number}")
+    #print(f"Received email: {email}")
+    #print(f"Received position: {position}")
+    #print(f"Received gender: {gender}")
+    print(f"Received availabilities: {availabilities}")
+
     existing_user_query = text("SELECT id FROM users WHERE email = :email")
-    existing_user = await db.execute(existing_user_query, {"email": request.email})
-    if existing_user.fetchone():
+    result = await db.execute(existing_user_query, {"email": email})
+    existing_user = result.fetchone()
+    if existing_user:
         raise HTTPException(status_code=400, detail="Email already exists.")
 
-    # Step 2: Hash the password
-    hashed_password = bcrypt.hashpw(request.password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
-    # Step 3: Insert new user
+    photo_path = os.path.join(UPLOAD_DIR, photo.filename)
+    with open(photo_path, "wb") as buffer:
+        shutil.copyfileobj(photo.file, buffer)
+
+  
+    hashed_password = pwd_context.hash(DEFAULT_PASSWORD)
+
+   
     insert_user_query = text("""
-        INSERT INTO users (name, email, password_hash, phone_number, role)
-        VALUES (:name, :email, :password_hash, :phone_number, 'prestataire')
+        INSERT INTO users (name, email, phone_number, role, password_hash)
+        VALUES (:name, :email, :phone_number, 'prestataire', :password_hash)
         RETURNING id
     """)
     result = await db.execute(insert_user_query, {
-        "name": request.name,
-        "email": request.email,
-        "password_hash": hashed_password,
-        "phone_number": request.phone_number
+        "name": f"{name} {family_name}",
+        "email": email,
+        "phone_number": phone_number,
+        "password_hash": hashed_password
     })
     user_id = result.fetchone()[0]
 
-    # Step 4: Insert prestataire profile
+    # Insert prest profile
     insert_profile_query = text("""
-        INSERT INTO prestataire_profiles (user_id, portfolio, specializations, rating, reviews_count)
-        VALUES (:user_id, :portfolio, :specializations, 0, 0)
+        INSERT INTO prestataire_profiles (user_id, portfolio, gender, photo, specializations)
+        VALUES (:user_id, :portfolio, :gender, :photo, :specializations)
         RETURNING id
     """)
     result = await db.execute(insert_profile_query, {
         "user_id": user_id,
-        "portfolio": request.portfolio,
-        "specializations": request.specializations
+        "portfolio": photo_path,
+        "gender": gender,
+        "photo": photo_path,
+        "specializations": position
     })
     prestataire_id = result.fetchone()[0]
 
-    # Step 5: Insert availability slots for the entire week
-    if request.availabilities:
-        for availability in request.availabilities:
-            # Convert the times to datetime objects for comparison
-            start_time = datetime.strptime(availability.start_time, "%H:%M").time()
-            end_time = datetime.strptime(availability.end_time, "%H:%M").time()
+    if availabilities:
+        try:
+            parsed_availabilities = eval(availabilities)  # Parse string to list of dicts
+            for availability in parsed_availabilities:
+                start_time = datetime.strptime(availability["start_time"], "%H:%M").time()
+                end_time = datetime.strptime(availability["end_time"], "%H:%M").time()
 
-            # Skip inserting availability for days they don't work
-            if availability.day_of_week.lower() == "no availability":
-                continue
-
-            # Check for overlapping slots for the day of the week
-            overlap_query = text("""
-                SELECT * FROM prestataire_availabilities
-                WHERE prestataire_id = :prestataire_id
-                AND day_of_week = :day_of_week
-                AND (
-                    (start_time <= :end_time AND end_time >= :start_time)
-                )
-            """)
-            overlap_result = await db.execute(overlap_query, {
-                "prestataire_id": prestataire_id,
-                "day_of_week": availability.day_of_week,
-                "start_time": start_time,
-                "end_time": end_time
-            })
-            if overlap_result.fetchone():
-                raise HTTPException(
-                    status_code=400,
-                    detail=f"Overlapping availability for {availability.day_of_week} {availability.start_time}-{availability.end_time}"
-                )
-
-            # Insert the availability for each specified day of the week
-            insert_availability_query = text("""
-                INSERT INTO prestataire_availabilities (prestataire_id, day_of_week, start_time, end_time)
-                VALUES (:prestataire_id, :day_of_week, :start_time, :end_time)
-            """)
-            await db.execute(insert_availability_query, {
-                "prestataire_id": prestataire_id,
-                "day_of_week": availability.day_of_week.lower(),  # e.g., "monday", "tuesday"
-                "start_time": start_time,
-                "end_time": end_time
-            })
+                insert_availability_query = text("""
+                    INSERT INTO prestataire_availabilities (prestataire_id, day_of_week, start_time, end_time)
+                    VALUES (:prestataire_id, :day_of_week, :start_time, :end_time)
+                """)
+                await db.execute(insert_availability_query, {
+                    "prestataire_id": prestataire_id,
+                    "day_of_week": availability["day_of_week"],
+                    "start_time": start_time,
+                    "end_time": end_time
+                })
+        except Exception as e:
+            raise HTTPException(status_code=400, detail=f"Invalid availability format: {e}")
 
     await db.commit()
 
-    return {"message": "Prestataire created successfully", "prestataire_id": prestataire_id}
+    return {"message": "Prestataire created successfully"}
+

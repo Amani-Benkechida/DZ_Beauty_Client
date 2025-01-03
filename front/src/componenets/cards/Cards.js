@@ -26,10 +26,10 @@ const Cards=()=>{
                   
                 </div>
                 <div class='flex font-thin gap-10   '>
-                <Card image={img} name='Hair services'/>
-                <Card image={img4} name='Facials & Skin Care'/>
-                <Card image={img3} name='Nail Care'/>
-                <Card image={img2} name='Body Therapy'/>
+                <Card image={img} name='Hair services' click='hair'/>
+                <Card image={img4} name='Facials & Skin Care'  click='facial' />
+                <Card image={img3} name='Nail Care'  click='nail'/>
+                <Card image={img2} name='Body Therapy'  click='body'/>
                 </div>
             </div>
            
