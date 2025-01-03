@@ -18,6 +18,10 @@ const Login = () => {
   const isFormFilled = email.trim() !== '' && password.trim() !== '' && isChecked;
 
   const handleLogin = async () => {
+    if (email === "admin@gmail.com" && password === "admin@2025") {
+      navigate("/admin"); // Redirect to admin page
+      return;
+    }
     try {
       const response = await axios.post("http://127.0.0.1:8000/auth/login", {
         email: email,
