@@ -15,6 +15,48 @@ import Navbar from '../homepage/navbar';
 import Header from '../homepage/header';
 import { useEffect } from 'react';
 const Onclick = () => {
+
+  const [clientId, setClientId] = useState("");
+  const [prestataireId, setPrestataireId] = useState("");
+  const [services, setServices] = useState([
+    {
+      service_id: 101,
+      date: "2025-01-05",
+      start_time: "10:00",
+      end_time: "11:00",
+      total_price: 50.00,
+    },
+    {
+      service_id: 102,
+      date: "2025-01-05",
+      start_time: "14:00",
+      end_time: "15:00",
+      total_price: 60.00,
+    }
+  ]);
+
+  const handleSubmi = async (e) => {
+    e.preventDefault();
+
+    const reservationData = {
+      client_id: clientId,
+      prestataire_id: prestataireId,
+      services: services, // Array of service objects
+    };
+
+    try {
+      const response = await axios.post("http://127.0.0.1:8000/reservation/reserve", reservationData);
+      alert(`Reservation Created. IDs: ${response.data.reservation_ids}, Total Price: ${response.data.total_price}`);
+    } catch (error) {
+      console.error("Error creating reservation:", error);
+    }
+  };
+
+
+
+
+
+
   const {stylist,Oclick} = useStylists();
   const freeday = [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22];
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -462,7 +504,7 @@ const [errorMessage, setErrorMessage] = useState('');
     </div>
     <button className='bg-darkgray w-full  font-poppins flex justify-center gap-2  text-white  p-2 text-sm mt-4'>
       <img src={vect}/>
-      <span onClick={()=>{setLogin(true)}} >Book Now</span>
+      <span onClick={(e)=>{setLogin(true);handleSubmi(e)}} >Book Now</span>
  
   </button></div>}
     </div>
