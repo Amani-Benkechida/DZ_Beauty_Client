@@ -1,4 +1,4 @@
-import react from 'react'
+import react,{useEffect,useState} from 'react'
 import Card from './card'
 import img from './632f0043407de42f8ef18ffc12db5239 (2).png'
 import img2 from './7bb8db63e5af18b6069918087ef264cd.png'
@@ -10,6 +10,8 @@ import img4 from './dc0d48b038634e9948e26bb073555422.png'
 
 const Cards=()=>{
     
+  // Function to fetch services and prestataires
+  
  
     
         return(

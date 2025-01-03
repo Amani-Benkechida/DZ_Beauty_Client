@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import dahabia from './baridi.png'
+
 const PaymentDetails = () => {
   const [cards, setCards] = useState([]);
   const [formVisible, setFormVisible] = useState(false);

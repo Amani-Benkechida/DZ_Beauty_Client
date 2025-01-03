@@ -7,7 +7,8 @@ import img from '../comp/A.png'
 import im from '../comp/B.png'
 import { Navigate,useNavigate } from 'react-router-dom';
 import {useStylists} from '../StylistProvider'
-
+import Cart from '../cart_payement/cat';
+import PaymentDetails from '../cart_payement/payementForm';
 const Sidebar = () => {
       const {setFirstletr} = useStylists();
   const navigate=useNavigate();
@@ -115,6 +116,9 @@ const Sidebar = () => {
         <div className="w-3/4 mt-10 ml-10 relative">
           {What === 'MesInformations' && <Profil />}
           {What === 'Appointments' && <Appoiment />}
+          {What === 'Cart' && <Cart />}
+          {What === 'PaymentDetails' && <PaymentDetails/>}
+
           <img className="absolute right-0 bottom-0" src={im} />
         </div>
       </div>

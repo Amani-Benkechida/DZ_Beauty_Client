@@ -28,6 +28,10 @@ from offers.specialOffer import send_special_offers
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from reservation.payment import router as payment_router
+from prestataire.add_prestataire_service import add_prestataire_to_service
+from prestataire.get_prestataire import get_all_prestataires_by_service
+from sqlalchemy.orm import Session
+
 
 
 # Initialize FastAPI Application
@@ -45,10 +49,19 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+async def get_db():
+    db: Session = SessionLocal()
+    try:
+        yield db
+    finally:
+        await db.close()
 
+@app.get("/prestataire")
+async def get_all_prestataires_by_service_route(service_id: int ,db: AsyncSession = Depends(get_db)):
+    return {"prestataires": [{"id": 1, "name": "John Doe"}, {"id": 2, "name": "Jane Smith"}]}
 
-
-
+    result = await get_all_prestataires_by_service(service_id,db)
+    return result
 # Include authentication routes
 app.include_router(auth_router)
 app.include_router(client_profile)

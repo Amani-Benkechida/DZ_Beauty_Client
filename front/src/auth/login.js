@@ -106,7 +106,7 @@ const Login = () => {
               className='h-12 text-white text-xl w-3/5'
               disabled={!isFormFilled}
               onClick={handleLogin} 
-              onClick={handleLogin} 
+            
             >
               Log In
             </button>

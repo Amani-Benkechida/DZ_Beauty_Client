@@ -31,6 +31,9 @@ import Body from './services/body therapy/body.jsx';
 
 import Facial from './services/facial and skin/facial.jsx';
 import Nail from './services/Nail/nail.jsx';
+import Cart from './cart_payement/cat.jsx';
+import PaymentDetails from './cart_payement/payementForm.jsx'
+import Edit from './admin/editprofile.js';
 function App() {
   return (
     <div className="App">
@@ -60,6 +63,10 @@ function App() {
             <Route path="/facial" element={<Facial/>}/>
         
             <Route path="/nail" element={<Nail/>}/>
+                    
+            <Route path="/cart" element={<Cart/>}/>
+            <Route path="/PaymentDetails" element={<PaymentDetails/>}/>
+            <Route path="/Edit" element={<Edit/>}/>
             
        
            
