@@ -6,9 +6,14 @@ import img2 from './img2.png';
 import img3 from './img3.png';
 import img4 from './img4.png';
 import flower from './../loginflower.png';
+import Header from "../../homepage/header";
+import Navbar from "../../homepage/navbar";
+import {useStylists} from '../../StylistProvider'
+
 
 
 const Body = () => {
+  const {setIdservice} = useStylists();
     const services = [
         {
           image: img1,
@@ -40,9 +45,12 @@ const Body = () => {
           
         },
       ];
+      setIdservice(4)
       
   return (
     <div className="bg-white px-8 py-12 relative">
+      <Header/>
+      <Navbar/>
       <div className="w-full flex justify-center mb-[48px]">
         <img src={image} className="w-[1224px] h-[300px]" />
       </div>
