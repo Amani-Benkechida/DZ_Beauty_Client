@@ -3,50 +3,79 @@ import Pres from './Pres';
 import image1 from './A.png'
 import image2 from './B.png'
 import data from '../info.json';
-import { useEffect, useState } from'react';
+import axios from 'axios';
+import  { useState, useEffect } from "react";
 
-const PRESES = () => {
+ import {useStylists} from '../StylistProvider'
+ const PRESES = () => {
+  const {idservice} = useStylists();
+  console.log(idservice)
   const firstStylist = data.stylists[0];
   const secondStylist= data.stylists[1];
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  
 
-  const fetchServices = async () => {
+
+  
+
+
+  const fetchPrestatairesByService = async (serviceId) => {
     try {
-      const response = await fetch('http://127.0.0.1:8000/prestataire?service_id=1'); // Replace with your actual service ID logic
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`);
-        console.log("hello")
-      }
-      const data = await response.json();
-      setServices(data.prestataires); // Assuming backend returns the IDs or relevant data
-      setLoading(false);
-      console.log(data.prestataires) 
-
-      console.log('yes')
-
-    } catch (err) {
-      setError(err.message);
-      setLoading(false);
-      console.log('no')
-
+      const response = await axios.get("http://localhost:8000/prestataire", {
+        params: { service_id:idservice}
+      });
+      console.log("Prestataires:", response.data.prestataires);
+      console.log(serviceId)
+      setServices(response.data.prestataires); // Update state with fetched data
+    } catch (error) {
+      console.error("Error fetching prestataires:", error.response?.data || error.message);
+      setError("Failed to fetch prestataires.");
     }
   };
 
+
   useEffect(() => {
-    fetchServices();
+    if (idservice) {
+      fetchPrestatairesByService(idservice);
 
-  }, 
-  []
-  ); 
-  if (loading) {
-    return <div>Loading...</div>;
+    }
+
+  }, [idservice]); // Dependency array ensures this runs when idservice changes
+
+  
+
+  
+
+
+
+   
+  async function getUser(userId) {
+    try {
+      const response = await axios.get(`http://localhost:8000/${userId}`);
+      
+      console.log('User data:', response.data);
+      
+      // Use data as needed
+      alert(`User Name: ${response.data.name}`);
+      alert(`Email: ${response.data.email}`);
+      alert(`Role: ${response.data.role}`);
+    } catch (error) {
+      console.error('Error fetching user:', error);
+      alert('Failed to fetch user data');
+    }
   }
 
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+
+
+
+
+
+  // Call the function with the user ID you want to fetch
+ // Replace 1 with the actual user ID
+
+ 
     
   
 
