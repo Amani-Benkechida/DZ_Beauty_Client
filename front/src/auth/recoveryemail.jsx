@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-
+import { useNavigate } from "react-router-dom";
 const RecoveryEmailSent = () => {
+   const navigate=useNavigate();
   const [code, setCode] = useState('');
   const [error, setError] = useState('');
 
@@ -97,17 +98,19 @@ const RecoveryEmailSent = () => {
             {/* Success Message */}
             {successMessage && <p className="text-green-500 text-sm">{successMessage}</p>}
 
-
             <button
-              type="submit"
-              className="w-full py-2 text-white bg-button_hover rounded-md hover:bg-black focus:outline-none focus:ring-2 focus:ring-pink-400"
-            >
-              NEXT →
-            </button>
+            type="submit"
+            className="w-full py-2 text-white bg-button_hover rounded-md hover:bg-black focus:outline-none focus:ring-2 focus:ring-pink-400"
+            
+          >
+            Submit
+          </button>
+            
           </form>
 
           <button
             className="w-full py-2 mt-4 text-white bg-black rounded-md hover:bg-button_hover focus:outline-none"
+            onClick={() => navigate("/backtologin")}
           >
             BACK TO LOGIN
           </button>
