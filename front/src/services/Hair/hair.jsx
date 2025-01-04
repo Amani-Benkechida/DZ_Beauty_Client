@@ -6,10 +6,13 @@ import img2 from './img2.png';
 import img3 from './img3.png';
 import img4 from './img4.png';
 import flower from './../loginflower.png';
-import Navbar from "../../homepage/navbar"
-import Header from "../../propos/header copy";
+import Navbar from "../../homepage/navbar";
+import Header from "../../homepage/header";
 import Footer from "../../footerfile.jsx/footer";
+import {useStylists} from '../../StylistProvider'
 const Hair = () => {
+  const {setIdservice} = useStylists();
+  setIdservice(1)
   const services = [
     {
       image: img1,
@@ -46,7 +49,7 @@ const Hair = () => {
     <div>
       <Header/>
       <Navbar/>
-    <div className="bg-white px-8 py-12 relative">
+    <div className="bg-white px-8 py-12 relative font-poppins">
       <div className="w-full flex justify-center mb-[48px]">
         <img src={image} className="w-[1224px] h-[300px]" />
       </div>
@@ -115,7 +118,8 @@ const Hair = () => {
         <img src={flower} alt="" />
       </div>
     </div>
-    <Footer/>
+    <div></div>
+    
     </div>
   );
 };
