@@ -32,10 +32,11 @@ export const StylistProvider = ({ children }) => {
 
     }
     const [firstletter,setFirstletr]=useState('')
+    const [idservice,setIdservice]=useState(1)
 
 
   return (
-    <StylistContext.Provider value={{stylistData,Oclick,fun,firstletter,setFirstletr}}>
+    <StylistContext.Provider value={{stylistData,Oclick,fun,firstletter,setFirstletr,idservice,setIdservice}}>
       {children}
     </StylistContext.Provider>
   );
