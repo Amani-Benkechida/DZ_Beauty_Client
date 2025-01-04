@@ -3,14 +3,14 @@ import image from './fd4a7e0bf3f55d8b9da80568d21d9a51.png'
 import bpic from './6f38207e8c3572bc2e268a7583a977e1-removebg-preview 1.png'
 import tpic from './38786172fae47ea7498bd3d245d709f3-removebg-preview 1.png'
 import Header from './header copy';
-import Navbar from '../homePage/navbar';
+import Navbar from '../homepage/navbar';
 import Footer from '../footerfile.jsx/footer';
 
 const Apropos = () => {
   return (
    
     
-   <div>
+   <div className='relative'>
     <Header/>
     <Navbar/>
     <div className="w-full h-screen flex flex-col  relative">
@@ -54,10 +54,13 @@ Welcome to Radiance Beauty Center, where every treatment is a journey to self-ca
       </div>
     </div>
     <div className="absolute bottom-0 right-0">
-      <img src={bpic} alt="Bottom Image" className="w-[268px] h-[365px]" />
+      <img src={bpic} alt="Bottom Image" className="w-[150px] h-[365px]" />
     </div>
   </div>
-  <Footer/>
+  <br/><br/><br/><br/><br/><br/><br/><br/>
+  <div className='className="absolute bottom-0 '>
+  <Footer />
+  </div>
   </div>
   );
 };
