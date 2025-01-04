@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import db from '../db.json'
 import Header from '../propos/header copy';
-import Navbar from '../homePage/navbar';
+// import Navbar from '../homePage/navbar';
 import Footer from '../footerfile.jsx/footer';
 const Cart = ({ cartItems = [], dateFromDB }) => {
   
@@ -84,7 +84,7 @@ const Cart = ({ cartItems = [], dateFromDB }) => {
   return (
     <div>
       <Header/>
-      <Navbar/>
+      {/* <Navbar/> */}
     <div className="relative flex flex-col p-6 bg-gray-100 min-h-screen font-poppins">
       {/* Main Content */}
       <div className="w-4/5 bg-white shadow-md">

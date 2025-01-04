@@ -24,6 +24,10 @@ import Services from './services/Services.js';
 import Ofres from './services/Ofres.js';
 import Contactus from './sidebare/Contact.js'
 import Sidebaradmin from './admin/Sidebaradmin.js';
+import PaymentDetails from "./cart_payement/payementForm.jsx"
+import { loadStripe } from "@stripe/stripe-js";
+import { Elements } from "@stripe/react-stripe-js";
+const stripePromise = loadStripe("pk_test_51QZWXuR3RIgFjJ6eA26pD3qxd9410kAGzhMsSx7miotBgHV9B2WRFfeY5hxWrjKgrV59DAPrCUjlMLb2nmFAdxnU00qCmXTyvd");
 function App() {
   return (
     <div className="App">
@@ -49,11 +53,8 @@ function App() {
             <Route path="/detail" element={<Onclick />} />
             <Route path="/profile" element={<Sidebar/>} />
             <Route path="/admin" element={<Sidebaradmin/>}/>
+            <Route path="/PaymentDetails" element={<Elements stripe={stripePromise}><PaymentDetails /></Elements>}/>
 
-
-            
-
-            
           </Routes>
         </Router>
       </StylistProvider>
