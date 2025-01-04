@@ -59,8 +59,11 @@ const Navbar = () => {
       
     </div>
         
-        <button className='w-[111px] h-[44px] bg-buttonColor text-white rounded hover:bg-button_hover'>
+        <button className='w-[111px] h-[44px] bg-buttonColor text-white rounded hover:bg-button_hover'
+        onClick={() => navigate("/booknow")}
+        >
           Book Now
+
         </button>
       </div>
     </div>
