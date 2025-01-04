@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
+
 const AddPrestataire = () => {
   const [formData, setFormData] = useState({
     name: '',
@@ -70,6 +71,7 @@ const AddPrestataire = () => {
       form.append('position', formData.position);
       form.append('photo', formData.photo);
       form.append('availabilities', JSON.stringify(availabilities));
+ 
 
       const response = await axios.post('http://localhost:8000/prestataire/create', form, {
         headers: {
@@ -79,11 +81,85 @@ const AddPrestataire = () => {
 
       alert('Prestataire added successfully!');
       console.log('Response:', response.data);
+      console.log('Response:', response.id);
+
+    const { id, message } = response.data;
+    addPrestataireToService(parseInt(id),parseInt(formData.position))
+
+   // Extract the prestataire ID from the response
+   
+ 
+    alert(id)
+
+    // Link the prestataire to the selected service
+   
     } catch (error) {
       console.error('Error creating prestataire:', error.response?.data || error.message);
       alert('Failed to add prestataire.');
     }
   };
+  const addPrestataireToService = async (prestataireId, serviceId) => {
+    if (!prestataireId || !serviceId) {
+      alert("Prestataire ID and Service ID must be provided");
+      return;
+    }
+  
+    try {
+      const response = await fetch(`http://127.0.0.1:8000/add-prestataire-to-service/?prestataire_id=${prestataireId}&service_id=${serviceId}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+  
+      if (!response.ok) {
+        // Get error details from the backend
+        const errorData = await response.json();
+        console.error("Backend Error:", errorData); // Log the backend response
+  
+        // Display the error in a more readable format
+        throw new Error(JSON.stringify(errorData));
+      }
+  
+      const data = await response.json();
+      console.log("Response from backend:", data); // Log the response from the backend
+  
+      alert('Prestataire added to service successfully!');
+    } catch (error) {
+      console.error('Error:', error);
+      alert(`Failed to add prestataire to service: ${error.message}`);
+    }
+  };
+  
+  // Fetch profile data from the backend
+
+    const fetchProfile = async () => {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        console.error("User is not logged in.");
+        return;
+      }
+
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/profile", {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+        });
+
+/*         setProfileData(response.data); */
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+      }
+    };
+
+   
+ 
+
+  
+  
 
   return (
     <form className="font-poppins w-full form pl-10 pr-7 pb-7 mt-2" onSubmit={handleSubmit}>
@@ -193,12 +269,17 @@ const AddPrestataire = () => {
               value={formData.position}
               onChange={handleInputChange}
               className="w-full p-2 border rounded-lg"
+
             >
+
                
-              <option value="Skin care & facial">Facial & Skin services</option>
-              <option value="Massage & body therapy"> body therapy</option>
-              <option value="Nail Stylist">Nail Stylist</option>
-              <option value="Nail Stylist">Hair services</option>
+                <option value="">Select Position</option>
+                <option value="1">Hairervices</option>
+              <option value="2"> Facial Skin services</option>
+              <option value="3">Nail Stylist</option>
+              <option value="4"> body therapy</option>
+           
+             
             </select>
               {errors.position && <p className="text-red-500 text-sm">{errors.position}</p>}
             </div>
