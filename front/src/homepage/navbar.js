@@ -18,7 +18,7 @@ const Navbar = () => {
           <ul className='flex space-x-5'>
             <li className='text-[16px]'><a href="/">Home</a></li>
             <li className='text-[16px]'><a href="/services" onClick={()=>navigate("/services")}>Services</a></li>
-            <li className='text-[16px]'><a href="/about">About Us</a></li>
+            <li className='text-[16px]' onClick={()=>navigate("/about")}><a href="/about">About Us</a></li>
             <li className='text-[16px]' onClick={()=>navigate("/contactus")}><a href="/contactus" >Contact Us</a></li>
           </ul>
         </nav>
