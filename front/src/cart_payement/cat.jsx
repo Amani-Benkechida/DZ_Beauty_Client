@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 
 import Header from '../homepage/header';
 import Navbar from "../homepage/navbar"
-import Footer from '../footerfile.jsx/footer';
+import Footer from '../footerfile/footer';
 const Cart = ({ cartItems = [], dateFromDB }) => {
   
 
@@ -26,7 +26,7 @@ const Cart = ({ cartItems = [], dateFromDB }) => {
     postalCode: '',
   });
 
-  const [showOverlay, setShowOverlay] = useState(false); // Assuming overlay is shown initially
+  const [showOverlay, setShowOverlay] = useState(true); // Assuming overlay is shown initially
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -142,6 +142,7 @@ const Cart = ({ cartItems = [], dateFromDB }) => {
       </div>
    
       </div>
+      {/*MENA TEBDA */}
       {/* Overlay */}
       {showOverlay && (
         <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
@@ -239,6 +240,7 @@ const Cart = ({ cartItems = [], dateFromDB }) => {
           </div>
         </div>
       )}
+      {/*MENA TEKMEL */}
     </div>
   );
 };
