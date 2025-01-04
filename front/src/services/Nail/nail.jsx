@@ -6,9 +6,16 @@ import img2 from './img2.png';
 import img3 from './img3.png';
 import img4 from './img4.png';
 import flower from './../loginflower.png';
+import Header from "../../homepage/header";
+import Navbar from "../../homepage/navbar";
+import {useStylists} from '../../StylistProvider'
+
 
 
 const Nails = () => {
+  const {setIdservice} = useStylists();
+  setIdservice(3)
+
     const services = [
         {
           image: img1,
@@ -43,7 +50,9 @@ const Nails = () => {
       
 
   return (
-    <div className="bg-white px-8 py-12 relative">
+    <div className="bg-white px-8 py-12 relative font-poppins">
+      <Header/>
+      <Navbar/>
       <div className="w-full flex justify-center mb-[48px]">
         <img src={img} className="w-[1224px] h-[300px]" />
       </div>
