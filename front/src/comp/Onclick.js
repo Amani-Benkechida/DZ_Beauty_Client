@@ -34,6 +34,110 @@ const Onclick = () => {
       total_price: 60.00,
     }
   ]);
+  const [pers,setPrestataire]=useState([])
+
+  useEffect(() => {
+    const getUser = async (userId) => {
+      try {
+        const response = await axios.get(`http://localhost:8000/${userId}`);
+       
+        setPrestataire(response.data)
+        
+
+        // Use data as needed
+       
+      } catch (error) {
+        console.error('Error fetching user:', error);
+        alert('Failed to fetch user data');
+      }
+    };
+
+    // Call the getUser function when the component mounts
+    getUser(1);
+  }, []); 
+
+  const [time, setTime] = useState(''); // assuming time state
+  const [availability, setAvailability] = useState(null);
+  const [errorMessag, setErrorMessag] = useState('');
+
+  useEffect(() => {
+    const checkAvailability = async () => {
+      const prestataireId = 5;
+      const dayOfWeek = ' Monday '.trim().toLowerCase(); // Trimmed spaces around the day
+
+      try {
+        const response = await axios.get(
+          `http://127.0.0.1:8000/availability/${prestataireId}/${dayOfWeek}`,
+          {
+            params: { time }, // Pass time as query parameter
+          }
+        );
+        setAvailability(response.data);
+        setErrorMessag('');
+        console.log('Success:', response.data);
+      } catch (error) {
+        setErrorMessag(error.response?.data?.detail || 'An error occurred');
+        setAvailability(null);
+        console.log('Error:', error);
+      }
+    };
+
+    checkAvailability(); // Call the function inside useEffect
+  }, [time]); // 
+  const [calendar, setCalendar] = useState({});
+  const [errorMessa, setErrorMess] = useState('');
+  const prestataireI=5
+  const month=1
+  const year=2025
+
+  useEffect(() => {
+       const prestataireI=5
+    const month=1
+    const year=2025
+    const fetchCalendar = async () => {
+   
+      try {
+        // Make the request to the backend
+        const response = await axios.get(
+          `http://127.0.0.1:8000/prestataire/calendar/${prestataireI}`,
+          {
+            params: { month, year },
+          }
+        );
+
+        // Set the calendar data in the state
+        setCalendar(response.data.calendar);
+        setErrorMess('');
+      } catch (error) {
+        // Handle errors, for example, 404 or 422
+        setErrorMess(error.response?.data?.detail || 'An error occurred');
+        setCalendar({});
+      }
+    };
+
+    fetchCalendar();
+  }, [prestataireId, month, year]); // Refetch if prestataireId, month, or year changes
+
+
+
+
+
+
+
+
+
+
+
+
+
+console.log(pers)
+
+
+
+
+
+
+
 
   const handleSubmi = async (e) => {
     e.preventDefault();
@@ -332,7 +436,7 @@ const [errorMessage, setErrorMessage] = useState('');
 
 
         <div className='text-darkgray '  style={{fontSize:'60px',fontWeight:'100'}} >
-        Mrs. {data.name}
+        Mrs. {pers.name}
         </div>
 <div className='flex gap-10'>
     <div className='w-3/4' >
