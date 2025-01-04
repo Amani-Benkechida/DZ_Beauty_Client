@@ -9,19 +9,7 @@ const Navbar = () => {
   const [cartCount, setCartCount] = useState(0);
   const navigate = useNavigate(); 
 
-  useEffect(() => {
-    // Fetch cart count from backend
-    const fetchCartCount = async () => {
-      try {
-        const response = await axios.get('/api/cart'); // Replace with your API endpoint
-        setCartCount(response.data.length); // Assuming response.data is the cart array
-      } catch (error) {
-        console.error("Error fetching cart count:", error);
-      }
-    };
-
-    fetchCartCount();
-  }, []);
+ 
   const handleProfileClick = () => {
     // Vérifie si le token existe dans localStorage
     const token = localStorage.getItem('token'); 
@@ -30,8 +18,7 @@ const Navbar = () => {
       // Si le token n'existe pas, redirige vers la page de login
       navigate('/login');
     } else {
-      // Si le token existe, fais ce que tu veux (par exemple afficher le profil)
-      console.log('Accès au profil');
+      navigate('profile')
     }
   };
   return (
