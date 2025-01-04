@@ -4,7 +4,7 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import Addprestataire from './Addprestataire';
 import Headadmin from './Headadmin';
-
+import AdminTable from './adminTable';
 const Sidebaradmin = () => {
   const navigate = useNavigate();
   const [activeSection, setActiveSection] =  useState('Appointments');
@@ -63,7 +63,7 @@ const Sidebaradmin = () => {
 
           {What === 'Prestataires List' &&<Addprestataire/>}
           
-           
+          {What === 'Appointments' &&<AdminTable/>}
           </div>
         </div>
       </div>
