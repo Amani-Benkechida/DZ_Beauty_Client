@@ -34,10 +34,10 @@ import Nail from './services/Nail/nail.jsx';
 import Cart from './cart_payement/cat.jsx';
 import PaymentDetails from './cart_payement/payementForm.jsx'
 import Edit from './admin/editprofile.js';
-import Apropos from './propos/apropos.jsx';
-import Forgot from './login/Forgot.jsx';
-import RecoveryEmailSent from './login/recoveryemail.jsx';
-import ResetPassword from './login/Resetpassword.jsx';
+/* import Apropos from './propos/apropos.jsx'; */
+import Forgot from './auth/Forgot.js';
+import RecoveryEmailSent from './auth/recoveryemail.jsx';
+
 function App() {
   return (
     <div className="App">
@@ -58,7 +58,7 @@ function App() {
           <Route path="/Contactus" element={<Contactus/>} />
           <Route exact path="/signup" element={<Signup/>} />
           <Route exact path="/login" element={<Login/>} />
-          <Route path="/about" element={<Apropos/>} />
+         {/*  <Route path="/about" element={<Apropos/>} /> */}
 
             <Route exact path="/prestataire" element={<Comp/>} />
             <Route path="/detail" element={<Onclick />} />
