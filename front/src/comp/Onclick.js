@@ -62,19 +62,21 @@ const Onclick = () => {
 
   useEffect(() => {
     const checkAvailability = async () => {
-      const prestataireId = 5;
-      const dayOfWeek = ' Monday '.trim().toLowerCase(); // Trimmed spaces around the day
+      const prestataireId = 25;
+      const dayOfWeek = 'Tuesday'.trim().toLowerCase(); // Trimmed spaces around the day
+       const time = '7:00'
 
       try {
         const response = await axios.get(
-          `http://127.0.0.1:8000/availability/${prestataireId}/${dayOfWeek}`,
+          `http://127.0.0.1:8000/prestataire/availability/${prestataireId}/${dayOfWeek}`,
           {
             params: { time }, // Pass time as query parameter
           }
         );
         setAvailability(response.data);
+
         setErrorMessag('');
-        console.log('Success:', response.data);
+        console.log('Success amani:', response.data);
       } catch (error) {
         setErrorMessag(error.response?.data?.detail || 'An error occurred');
         setAvailability(null);
@@ -91,7 +93,7 @@ const Onclick = () => {
   const year=2025
 
   useEffect(() => {
-       const prestataireI=5
+       const prestataireI=25
     const month=1
     const year=2025
     const fetchCalendar = async () => {
@@ -108,6 +110,7 @@ const Onclick = () => {
         // Set the calendar data in the state
         setCalendar(response.data.calendar);
         setErrorMess('');
+        console.log('calnder:', response.data);
       } catch (error) {
         // Handle errors, for example, 404 or 422
         setErrorMess(error.response?.data?.detail || 'An error occurred');
@@ -125,6 +128,40 @@ const Onclick = () => {
 
 
 
+
+  /* async function createReservation() {
+      const reservationData = {
+          client_id: 1,  // Example client ID
+          prestataire_id: 10,  // Example prestataire ID
+          services: [
+              {
+                  service_id: 101,
+                  date: "2025-01-10",  // Service reservation date
+                  start_time: "14:00",  // Start time
+                  end_time: "15:00",  // End time
+                  total_price: 100  // Price for this service
+              },
+              {
+                  service_id: 102,
+                  date: "2025-01-10",  // Another service reservation date
+                  start_time: "15:00",  // Start time
+                  end_time: "16:00",  // End time
+                  total_price: 150  // Price for this service
+              }
+          ]
+      };
+  
+      try {
+          const response = await axios.post('http://127.0.0.1:8000/reservation/reserve', reservationData);
+          console.log('Reservation Successful:', response.data);
+          alert('Reservation Successful. IDs: ' + response.data.reservation_ids);
+      } catch (error) {
+          console.error('Error creating reservation:', error);
+          alert('Error: ' + error.response?.data?.detail || error.message);
+      }
+  }
+  createReservation() */
+  
 
 
 
@@ -459,16 +496,8 @@ const [errorMessage, setErrorMessage] = useState('');
     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
     </div>
     <div className='mt-4'>
-    <div  style={{fontSize:'20px',fontWeight:'800'}} className='font-poppins mt-4 mb-4'>
-    MY WORK
-    </div>
-    <div className='grid grid-cols-3 gap-3'>
-      <img src={img}/>
-      <img src={img}/>  <img src={img}/>  <img src={img}/>  <img src={img}/>
-      <img src={img}/>
-      
-     
-    </div></div>
+  
+  </div>
     <div>
 
     </div>
