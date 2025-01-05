@@ -1,41 +1,47 @@
-import React, { useState } from 'react';
-import ProviderCard from './ProviderCard'; 
-import img from './image 9.png';
+import React, { useState } from "react";
+import ProviderCard from "./ProviderCard"; 
+import img from "./image 9.png";
 
 const providers = [
   {
-    name: 'Jason Price',
-    role: 'Hair Stylist',
-    expertise: 'Master',
-    imgSrc: img, 
-  },
-  {
-    name: 'Ikram Ouali',
-    role: 'Hair Stylist',
-    expertise: 'Elite',
+    name: "Jason Price",
+    role: "Hair Stylist",
+    expertise: "Master",
     imgSrc: img,
   },
   {
-    name: 'Hadjira',
-    role: 'Nail Stylist',
-    expertise: 'Master',
+    name: "Ikram Ouali",
+    role: "Hair Stylist",
+    expertise: "Elite",
     imgSrc: img,
   },
   {
-    name: 'Hibat Allah',
-    role: 'Massage & Body Therapy',
-    expertise: 'Master',
+    name: "Hadjira",
+    role: "Nail Stylist",
+    expertise: "Master",
+    imgSrc: img,
+  },
+  {
+    name: "Hibat Allah",
+    role: "Massage & Body Therapy",
+    expertise: "Master",
     imgSrc: img,
   },
 ];
 
 const Prestataires = () => {
-  const [filter, setFilter] = useState('All'); // Manage the active filter
+  const [filter, setFilter] = useState("All"); // Manage the active filter
+  const [editProvider, setEditProvider] = useState(null); // Track provider being edited
 
   // Function to filter providers based on the selected role
   const filteredProviders = providers.filter((provider) => {
-    return filter === 'All' || provider.role === filter;
+    return filter === "All" || provider.role === filter;
   });
+
+  // Edit button handler
+  const handleEdit = (provider) => {
+    setEditProvider(provider); // Set the provider being edited
+  };
 
   return (
     <div className="flex">
@@ -47,38 +53,23 @@ const Prestataires = () => {
             Add New Prestataire
           </button>
         </div>
+
+        {/* Filter Buttons */}
         <div className="flex gap-4 mt-4">
-          <button
-            className={`px-3 py-1 ${filter === 'All' ? 'bg-[#EDDADA] text-button_hover' : 'bg-gray-200 text-gray-700'} rounded-lg`}
-            onClick={() => setFilter('All')}
-          >
-            All
-          </button>
-          <button
-            className={`px-3 py-1 ${filter === 'Hair Stylist' ? 'bg-[#EDDADA] text-button_hover' : 'bg-gray-200 text-gray-700'} rounded-lg`}
-            onClick={() => setFilter('Hair Stylist')}
-          >
-            Hair Stylist
-          </button>
-          <button
-            className={`px-3 py-1 ${filter === 'Nail Stylist' ? 'bg-[#EDDADA] text-button_hover' : 'bg-gray-200 text-gray-700'} rounded-lg`}
-            onClick={() => setFilter('Nail Stylist')}
-          >
-            Nail Stylist
-          </button>
-          <button
-            className={`px-3 py-1 ${filter === 'Massage & Body Therapy' ? 'bg-[#EDDADA] text-button_hover' : 'bg-gray-200 text-gray-700'} rounded-lg`}
-            onClick={() => setFilter('Massage & Body Therapy')}
-          >
-            Massage & Body Therapy
-          </button>
-          <button
-            className={`px-3 py-1 ${filter === 'Skin Care & Facial' ? 'bg-[#EDDADA] text-button_hover' : 'bg-gray-200 text-gray-700'} rounded-lg`}
-            onClick={() => setFilter('Skin Care & Facial')}
-          >
-            Skin Care & Facial
-          </button>
+          {["All", "Hair Stylist", "Nail Stylist", "Massage & Body Therapy", "Skin Care & Facial"].map((category) => (
+            <button
+              key={category}
+              className={`px-3 py-1 ${
+                filter === category ? "bg-[#EDDADA] text-button_hover" : "bg-gray-200 text-gray-700"
+              } rounded-lg`}
+              onClick={() => setFilter(category)}
+            >
+              {category}
+            </button>
+          ))}
         </div>
+
+        {/* Providers Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
           {filteredProviders.map((provider, index) => (
             <ProviderCard
@@ -87,9 +78,60 @@ const Prestataires = () => {
               role={provider.role}
               expertise={provider.expertise}
               imgSrc={provider.imgSrc}
+              onEdit={() => handleEdit(provider)} // Pass edit handler
             />
           ))}
         </div>
+
+        {/* Edit Form/Modal */}
+        {editProvider && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+              <h3 className="text-lg font-semibold">Edit Provider</h3>
+              <form>
+                <div className="mt-4">
+                  <label className="block text-gray-700 text-sm">Name</label>
+                  <input
+                    type="text"
+                    value={editProvider.name}
+                    className="w-full p-2 border border-gray-300 rounded-lg"
+                  />
+                </div>
+                <div className="mt-4">
+                  <label className="block text-gray-700 text-sm">Role</label>
+                  <input
+                    type="text"
+                    value={editProvider.role}
+                    className="w-full p-2 border border-gray-300 rounded-lg"
+                  />
+                </div>
+                <div className="mt-4">
+                  <label className="block text-gray-700 text-sm">Expertise</label>
+                  <input
+                    type="text"
+                    value={editProvider.expertise}
+                    className="w-full p-2 border border-gray-300 rounded-lg"
+                  />
+                </div>
+                <div className="flex justify-end mt-6">
+                  <button
+                    type="button"
+                    className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg mr-2"
+                    onClick={() => setEditProvider(null)} // Close modal
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                  >
+                    Save
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
