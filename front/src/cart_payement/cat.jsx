@@ -26,7 +26,7 @@ const Cart = ({ cartItems = [], dateFromDB }) => {
     postalCode: '',
   });
 
-  const [showOverlay, setShowOverlay] = useState(true); // Assuming overlay is shown initially
+  const [showOverlay, setShowOverlay] = useState(false); // Assuming overlay is shown initially
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -88,11 +88,9 @@ const Cart = ({ cartItems = [], dateFromDB }) => {
       {/* Main Content */}
       <div className="w-4/5 bg-white shadow-md">
         <div className="p-6">
-          {/* Date and Time */}
+          
           <div className="flex justify-between items-center w-full mb-6">
-            <div className="text-[#CB8587] text-lg font-semibold">
-              {dateFromDB || "Loading date..."} {/* Placeholder for date */}
-            </div>
+            
             {/* yedi lel services page */}
             <button className="h-[44px] bg-buttonColor text-white w-[184px] hover:bg-button_hover">
               Add service
@@ -132,7 +130,7 @@ const Cart = ({ cartItems = [], dateFromDB }) => {
           <div className="mt-6">
             
             <button
-              onClick={() => setShowOverlay(cartItems.length > 0)} // Show overlay only if there are items in the cart
+              onClick={() => setShowOverlay(true)} // Show overlay only if there are items in the cart
               className="w-full bg-black text-white py-3 hover:bg-button_hover transition"
             >
               Book reservation
