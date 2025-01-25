@@ -60,8 +60,8 @@ const Hair = () => {
         </div>
 
         {/* What to Expect, Style Consultation, and Three Levels of Expertise */}
-        <section className="mb-12  w-full h-[300px] relative">
-          <div className="w-[1224px] absolute right-[430px]">
+        <section className=" h-[300px] relative">
+          <div className=" absolute">
             <div className="flex flex-row justify-center mb-[24px]">
               {/* What to Expect */}
               <div className="w-[600px]">
