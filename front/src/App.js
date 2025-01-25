@@ -80,6 +80,7 @@ function App() {
            
             <Route path="/backtologin"  element={<Login/>}/>
             <Route path="/booknow"  element={<Services/>}/>
+            <Route path="/addservice"  element={<Services/>}/>
 
 
             
