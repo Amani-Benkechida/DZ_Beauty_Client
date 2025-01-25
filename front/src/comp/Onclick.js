@@ -118,7 +118,7 @@ console.log("Days not in the current week:", remainingDays);
        
       } catch (error) {
         console.error('Error fetching user:', error);
-        alert('Failed to fetch user data');
+       
       }
     };
 
@@ -226,10 +226,10 @@ console.log("Days not in the current week:", remainingDays);
       try {
           const response = await axios.post('http://127.0.0.1:8000/reservation/reserve', reservationData);
           console.log('Reservation Successful:', response.data);
-          alert('Reservation Successful. IDs: ' + response.data.reservation_ids);
+         ('Reservation Successful. IDs: ' + response.data.reservation_ids);
       } catch (error) {
           console.error('Error creating reservation:', error);
-          alert('Error: ' + error.response?.data?.detail || error.message);
+         ('Error: ' + error.response?.data?.detail || error.message);
       }
   }
   handleSubm()
@@ -259,7 +259,7 @@ console.log(pers)
     try {
       const response = await axios.post("http://127.0.0.1:8000/reservation/reserve", reservationData);
    
-     alert("res")
+    ("res")
   
     } catch (error) {
       console.error("Error creating reservation:", error);
@@ -530,8 +530,7 @@ const [errorMessage, setErrorMessage] = useState('');
         // Save the token in localStorage
         localStorage.setItem("token", response.data.token);
         setLogin(false);
-  
-        alert(response.data.message); // Display the success message
+   // Display the success message
         fetchProfile()
 
        
@@ -568,7 +567,7 @@ const [errorMessage, setErrorMessage] = useState('');
             role: 'client',
           });
   
-          alert('Registration successful!');
+     
           fetchProfile()
         
           setSign(false); // Close modal
@@ -576,9 +575,9 @@ const [errorMessage, setErrorMessage] = useState('');
         } catch (error) {
           
           if (error.response && error.response.data.detail) {
-            alert(error.response.data.detail);
+      
           } else {
-            alert('An error occurred. Please try again later.');
+       
           }
         }
       }
@@ -1184,37 +1183,7 @@ fetch("http://127.0.0.1:8000/users/current-user", {
       </div>
 
     <div>
-    
-    <div>
-      <div className="flex space-x-4">
-        {/* Day selection buttons */}
-        {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map(
-          (day) => (
-            <button
-              key={day}
-              className="p-2 border rounded-lg"
-              onClick={() => handleDayClick(day)}
-            >
-              {day}
-            </button>
-          )
-        )}
-      </div>
 
-      <div>
-        {/* Render available slots for the selected day */}
-        {selectedDay ? (
-          <div>
-            <h2>Available Slots for {selectedDay}:</h2>
-            <div className='grid'>
-            {getAvailableSlotsForDay(selectedDay)}</div>
-          </div>
-        ) : (
-          <div>Select a day to see availability</div>
-        )}
-      </div>
-
-    </div>
 
 
 
