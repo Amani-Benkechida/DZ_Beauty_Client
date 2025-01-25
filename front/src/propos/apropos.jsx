@@ -11,24 +11,15 @@ const Apropos = () => {
   const { t } = useTranslation();
 
   return (
-    <div className="relative">
+    <div className="">
       <Header />
       <Navbar />
-      <div className="w-full h-screen flex flex-col relative ">
+      <div className="w-full h-screen flex flex-col relative  ">
         <div className="">
           <img src={tpic} alt="TOP Image" className="w-[95px] h-[162px] absolute top-0 " />
         </div>
         <div className="flex flex-col items-center justify-center flex-grow">
-          <div className="mr-[1355px] mb-[5px]">
-            <h3
-              style={{
-                fontFamily: 'Klaristha',
-              }}
-              className="font-[5px] text-[50px] leading-[72px]"
-            >
-              {t('welcomeMessage')}
-            </h3>
-          </div>
+          
           <div className="flex m-24">
             <div className="bg-green-400 absolute top-0 left-0 w-1/2 pl-16 ">
               <img alt="A propos" src={image} className="w-[850px] h-[552px] absolute top-0 p-10" />
@@ -54,20 +45,8 @@ const Apropos = () => {
           <img src={bpic} alt="Bottom Image" className="w-[150px] h-[365px]" />
         </div>
       </div>
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <br />
-      <div>
-        <Footer />
-      </div>
+     
+      
     </div>
   );
 };
