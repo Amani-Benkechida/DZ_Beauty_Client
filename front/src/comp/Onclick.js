@@ -821,8 +821,9 @@ fetch("http://127.0.0.1:8000/users/current-user", {
 
   return (
     <div>
+       <Header/>
     <Navbar/>
-    <Header/>
+   
 
     <div  className='p-10   relative    '>
 
