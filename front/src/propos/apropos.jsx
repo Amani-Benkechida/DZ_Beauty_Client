@@ -8,7 +8,7 @@ import Navbar from '../homepage/navbar';
 import Footer from '../footerfile.jsx/footer';
 
 const Apropos = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation(); 
 
   return (
     <div className="">
