@@ -50,7 +50,8 @@ const Hair = () => {
   ];
 
   return (
-    <div >
+    <div className="relative">
+    <div className="relative"  >
       <Header />
       <Navbar />
       <div className="bg-white px-8 py-12 relative font-poppins">
@@ -59,7 +60,7 @@ const Hair = () => {
         </div>
 
         {/* What to Expect, Style Consultation, and Three Levels of Expertise */}
-        <section className="mb-12 mr-[1000px] ml-[108px] w-full h-[300px] relative">
+        <section className="mb-12  w-full h-[300px] relative">
           <div className="w-[1224px] absolute right-[430px]">
             <div className="flex flex-row justify-center mb-[24px]">
               {/* What to Expect */}
@@ -77,7 +78,7 @@ const Hair = () => {
                 <h2 className="font-klaristha text-[40px] font-light leading-[32.8px] mb-4 text-left">
                   {t('hair.styleConsultation.title')}
                 </h2>
-                <p className="font-poppins text-[16px] font-normal leading-[24px] text-gray-600 text-left">
+                <p className="font-poppins text-[16px]  font-normal leading-[24px] text-gray-600 ">
                   {t('hair.styleConsultation.description')}
                 </p>
               </div>
@@ -118,14 +119,12 @@ const Hair = () => {
         </div>
 
       </div>
-      <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-      <div className="fix bottom-0">
-
-   
-    
-      <Footer />   </div>
+      
+      
       </div>
-   
+      
+      </div>
+     
   );
 };
 
