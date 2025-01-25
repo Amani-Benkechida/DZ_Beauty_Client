@@ -61,7 +61,7 @@ const ContactUs = () => {
         </div>
         <div className="flex">
           <div className="w-1/2">
-            <div className="text-4xl">Ou nous trouver ?</div>
+            
             <div className="text-xl flex gap-3">
                 <img src={img4} className='h-5'/>
                 9th street, Howard st, Paris, France</div>
