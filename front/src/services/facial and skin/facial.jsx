@@ -46,8 +46,8 @@ const Facial = () => {
       </div>
 
       {/* What to Expect, Style Consultation, and Three Levels of Expertise */}
-      <section className="mb-12 mr-[1000px] ml-[108px] w-full h-[300px] relative">
-        <div className="w-[1224px] absolute right-[430px]">
+      <section className=" flex justify-center items-center  w-full h-[300px] relative">
+        <div className=" absolute ">
           <div className="flex flex-row justify-center mb-[24px]">
             {/* What to Expect */}
             <div className="w-[600px]">
@@ -92,7 +92,7 @@ const Facial = () => {
           className="font-klaristha text-[72px] font-light leading-[72px] "
           style={{ fontWeight: 250 }}
         >
-          Hair Services
+          Facial
         </h2>
       </div>
 
