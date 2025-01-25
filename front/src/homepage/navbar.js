@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next';
 
 const Navbar = () => {
   const { t } = useTranslation();
-  const [cartCount, setCartCount] = useState(7);
+  const [cartCount, setCartCount] = useState();
   const navigate = useNavigate();
 
   return (
