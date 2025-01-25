@@ -50,7 +50,7 @@ const Nails = () => {
       
 
   return (
-    <div className="bg-white px-8 py-12 relative font-poppins">
+    <div className="bg-white px-8  relative font-poppins">
       <Header/>
       <Navbar/>
       <div className="w-full flex justify-center mb-[48px]">
@@ -58,8 +58,8 @@ const Nails = () => {
       </div>
 
       {/* What to Expect, Style Consultation, and Three Levels of Expertise */}
-      <section className="mb-12 mr-[1000px] ml-[108px] w-full h-[300px] relative text-xl">
-        <div className="w-[1224px] absolute right-[100px]">
+      <section className="mb-12  w-full h-[300px] relative text-xl ">
+        <div className=" absolute ">
           <div className="flex flex-row justify-center mb-[24px]">
             {/* What to Expect */}
             <div className="w-[600px]">
