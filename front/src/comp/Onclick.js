@@ -72,7 +72,6 @@ const [errorMessage, setErrorMessage] = useState('');
     };
     
 
-
     const afichagedetab = (selectedDate) => {
       if (freeday.includes(selectedDate)) {
         setafiche(false); // Hide table if the date is a free day
@@ -87,7 +86,7 @@ const [errorMessage, setErrorMessage] = useState('');
       }
     
       try {
-        const response = await axios.post("http://127.0.0.1:8000/auth/signup", {
+        const response = await axios.post("http://127.0.0.1:8000/auth/register", {
           username,
           email: signupEmail,
           password: signupPassword,
@@ -102,13 +101,6 @@ const [errorMessage, setErrorMessage] = useState('');
         }
       }
     };
-    
-    
-
-   
-
-
-
     const handleLogin = async () => {
       try {
         const response = await axios.post("http://127.0.0.1:8000/auth/login", {
@@ -127,16 +119,10 @@ const [errorMessage, setErrorMessage] = useState('');
       }
     };
    
-
-
-
   return (
     <div  className='p-10   relative    '>
 
 <div  className={login ? 'p-10 inset-0  filter blur-sm z-0 ':'p-10 inset-0 z-0'}>
-  
-
-
         <div className='text-darkgray '  style={{fontSize:'60px',fontWeight:'100'}} >
         Mrs. {data.name}
         </div>
@@ -177,8 +163,6 @@ const [errorMessage, setErrorMessage] = useState('');
 </div>
 </div>
 <div>
-  
-
 <div className="calendrier-container">
       <h1 className='font-poppins text-xl'>Choose Date :</h1>
       <div className="p-4 max-w-md mx-auto shadow-lg shadow-gray-400 bg-white  rounded-lg font-poppins mt-4">
@@ -213,16 +197,6 @@ const [errorMessage, setErrorMessage] = useState('');
       </div>
       <div className="mt-4 text-center"></div>
     </div>
-  
-      
-      
-      
-      
-      
-      
-      
-      
-
       </div>
       { afiche===true  &&
         <div className=''>
@@ -303,10 +277,6 @@ const [errorMessage, setErrorMessage] = useState('');
   </div>
 
 </div>
-      
-
-
-
     </div>
     <button className='bg-darkgray w-full  font-poppins flex justify-center gap-2  text-white  p-2 text-sm mt-4'>
       <img src={vect}/>
@@ -394,11 +364,7 @@ const [errorMessage, setErrorMessage] = useState('');
               style={{ borderRadius: "10px" }}
               type="checkbox"
               className="text-white font-bold p-15 mr-5 w-4 rounded accent-green-600"
-              name="isNotRobot"
-
-
-               
-              
+              name="isNotRobot" 
             />
             <p style={{ color: "#6F6F6F" }} className="text-lg ">
                I'm not a robot
@@ -411,11 +377,7 @@ const [errorMessage, setErrorMessage] = useState('');
 
     </div>
     </div></div>}
-
-
-      
     </div>
-
 
   )
 }

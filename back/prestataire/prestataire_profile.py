@@ -40,7 +40,7 @@ async def create_prestataire(
     #print(f"Received email: {email}")
     #print(f"Received position: {position}")
     #print(f"Received gender: {gender}")
-    3print(f"Received availabilities: {availabilities}")
+    #print(f"Received availabilities: {availabilities}")
 
     existing_user_query = text("SELECT id FROM users WHERE email = :email")
     result = await db.execute(existing_user_query, {"email": email})

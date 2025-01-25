@@ -17,7 +17,7 @@ from prestataire.availability_byCalender import router as calender
 from prestataire.availability_byWeek import router as week
 from prestataire.prestataire_profile import router as prestataire_profile
 from prestataire.update_prestataire_availability import router as update_prestataire
-
+from prestataire.prestataire_availability import router as prestataire
 from sqlalchemy.exc import IntegrityError
 
 from fastapi.middleware.cors import CORSMiddleware
@@ -68,5 +68,6 @@ app.include_router(reviews_router)
 app.include_router(loyality_router)
 app.include_router(spacialOffer_router)
 app.include_router(payment_router)
+app.include_router(prestataire)
 
 

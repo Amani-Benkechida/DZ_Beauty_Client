@@ -10,7 +10,7 @@ import bcrypt
 router = APIRouter(prefix="/profile", tags=["Profile"])
 load_dotenv()
 
-SECRET_KEY = "SECRET_KEY"  # Replace with your secret key
+SECRET_KEY = "SECRET_KEY" 
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
